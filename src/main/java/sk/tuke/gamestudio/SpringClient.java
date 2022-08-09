@@ -5,6 +5,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import sk.tuke.gamestudio.minesweeper.consoleui.ConsoleUI;
+import sk.tuke.gamestudio.service.ScoreService;
+import sk.tuke.gamestudio.service.ScoreServiceJDBC;
 
 @SpringBootApplication
 public class SpringClient {
@@ -20,5 +22,10 @@ public class SpringClient {
     @Bean
     public ConsoleUI console() {
         return new ConsoleUI();
+    }
+
+    @Bean
+    public ScoreService scoreService() {
+        return new ScoreServiceJDBC();
     }
 }

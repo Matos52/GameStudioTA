@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import sk.tuke.gamestudio.entity.Comment;
 import sk.tuke.gamestudio.entity.Rating;
 import sk.tuke.gamestudio.entity.Score;
@@ -35,6 +36,9 @@ public class ConsoleUI implements UserInterface {
      * name of the player
      */
     private String userName ="";
+
+    @Autowired
+    private ScoreService scoreService;
 
     private Settings setting;
 
@@ -111,7 +115,7 @@ public class ConsoleUI implements UserInterface {
     public void score() {
         int gameScore = 0;
 
-        ScoreService scoreService = new ScoreServiceJDBC();
+//        ScoreService scoreService = new ScoreServiceJDBC();
         var scores = scoreService.getBestScores(GAME);
 
         scoreService.addScore(new Score(GAME, userName, gameScore, new Date()));
