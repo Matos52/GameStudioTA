@@ -1,10 +1,18 @@
 package sk.tuke.gamestudio.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Date;
 
+@Entity
 public class Rating implements Serializable {
 
+
+    @Id
+    @GeneratedValue
+    private long ident;
     private String game;
     private String userName;
     private int rating;

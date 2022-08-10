@@ -6,7 +6,7 @@ import sk.tuke.gamestudio.entity.Score;
 import sk.tuke.gamestudio.service.ScoreService;
 import sk.tuke.gamestudio.service.ScoreServiceJDBC;
 
-public class TestJDBC {
+public class PlaygroundJDBC {
 
     public static void main(String[] args) throws Exception {
 

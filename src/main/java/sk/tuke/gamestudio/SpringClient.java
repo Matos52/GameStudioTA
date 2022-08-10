@@ -38,10 +38,12 @@ public class SpringClient {
     public ScoreService scoreService() {
         return new ScoreServiceJDBC();
     }
+
     @Bean
     public CommentService commentService() {
         return new CommentServiceJDBC();
     }
+
     @Bean
     public RatingService ratingService() {
         return new RatingServiceJDBC();
