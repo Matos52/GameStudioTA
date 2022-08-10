@@ -4,6 +4,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import sk.tuke.gamestudio.minesweeper.PlaygroundJPA;
 import sk.tuke.gamestudio.minesweeper.consoleui.ConsoleUI;
 import sk.tuke.gamestudio.service.*;
 
@@ -14,8 +15,18 @@ public class SpringClient {
     }
 
     @Bean
+    public CommandLineRunner runnerJPA(PlaygroundJPA console) {
+        return s -> console.play();
+    }
+
+    @Bean
     public CommandLineRunner runner(ConsoleUI console) {
         return s -> console.play();
+    }
+
+    @Bean
+    public PlaygroundJPA consoleJPA() {
+        return new PlaygroundJPA();
     }
 
     @Bean

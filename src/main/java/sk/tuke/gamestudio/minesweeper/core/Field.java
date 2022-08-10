@@ -219,8 +219,6 @@ public class Field {
         return (int) ((System.currentTimeMillis() - startMillis)/1000);
     }
 
-
-
     public int getScore() {
         return rowCount * columnCount * 10 - getPlayTimeInSeconds();
     }

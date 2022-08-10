@@ -1,13 +1,26 @@
 package sk.tuke.gamestudio.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Date;
 
+@Entity
 public class Score implements Serializable {
+
+    //primarny kluc
+    @Id
+    @GeneratedValue
+    private long ident;
     private String game;
     private String userName;
     private int points;
     private Date playedOn;
+
+    public Score() {
+
+    }
 
     public Score(String game, String userName, int points, Date playedOn) {
         this.game = game;

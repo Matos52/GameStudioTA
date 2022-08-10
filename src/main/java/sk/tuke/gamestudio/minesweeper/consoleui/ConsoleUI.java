@@ -113,13 +113,12 @@ public class ConsoleUI implements UserInterface {
         } while (true);
         handlerComment();
         handlerRating();
-        score();
+        score(gameScore);
         System.exit(0);
 
     }
 
-    public void score() {
-        int gameScore = 0;
+    public void score(int gameScore) {
 
 //        ScoreService scoreService = new ScoreServiceJDBC();
         var scores = scoreService.getBestScores(GAME);
@@ -131,7 +130,6 @@ public class ConsoleUI implements UserInterface {
             System.out.println((i + 1) + ". " +scores.get(i));
         }
     }
-
     private void handlerComment() {
         try {
             comment();

@@ -15,6 +15,8 @@ public class ScoreServiceTest {
 //    private ScoreService scoreService = new ScoreServiceJDBC();
     private ScoreService scoreService = new ScoreServiceFile();
 
+//    private ScoreService scoreService = new ScoreServiceJPA();
+
     private static final String GAME = "minesweeper";
 
 
