@@ -40,6 +40,12 @@ public class ConsoleUI implements UserInterface {
     @Autowired
     private ScoreService scoreService;
 
+    @Autowired
+    private CommentService commentService;
+
+    @Autowired
+    private RatingService ratingService;
+
     private Settings setting;
 
     private static final String GAME = "minesweeper";
@@ -149,7 +155,7 @@ public class ConsoleUI implements UserInterface {
     }
 
     public void comment() throws GameStudioException {
-        CommentService commentService = new CommentServiceJDBC();
+//        CommentService commentService = new CommentServiceJDBC();
 
         var comments = commentService.getComments(GAME);
 
@@ -168,7 +174,7 @@ public class ConsoleUI implements UserInterface {
 
     public void rating() throws GameStudioException {
 
-        RatingService ratingService = new RatingServiceJDBC();
+//        RatingService ratingService = new RatingServiceJDBC();
         System.out.println("Zanechaj hodnotenie k tvojej hre: ");
 
         String userRating = readLine();
