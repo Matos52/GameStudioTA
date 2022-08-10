@@ -14,17 +14,19 @@ public class RatingServiceJPA implements RatingService {
 
     @Override
     public void setRating(Rating rating) {
-        
+
     }
 
     @Override
     public int getAverageRating(String game) {
-        return 0;
+        entityManager.createNativeQuery("SELECT ROUND(AVG(rating)) FROM rating where game = :myGame")
+                .setParameter("myGame", game);
     }
 
     @Override
     public int getRating(String game, String username) {
-
+        entityManager.createNativeQuery("SELECT rating FROM rating where game = :myGame AND username = :myUserName")
+                .setParameter("myGame",game).setParameter("myUserName", username).executeUpdate();
     }
 
     @Override
