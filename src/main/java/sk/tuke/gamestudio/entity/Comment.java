@@ -1,5 +1,6 @@
 package sk.tuke.gamestudio.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -9,11 +10,16 @@ import java.util.Date;
 @Entity
 public class Comment implements Serializable {
 
+    public Comment() {
+    }
+
     @Id
     @GeneratedValue
     private long ident;
     private String game;
     private String userName;
+
+    @Column(columnDefinition = "VARCHAR (1000) NOT NULL", length = 0)
     private String comment;
     private Date commentedOn;
 

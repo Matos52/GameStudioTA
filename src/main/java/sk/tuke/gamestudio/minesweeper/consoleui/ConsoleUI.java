@@ -182,9 +182,10 @@ public class ConsoleUI implements UserInterface {
 
         ratingService.setRating(new Rating(GAME, userName, Integer.parseInt(userRating), new Date()));
 
-        var ratings = ratingService.getRating(GAME, userName);
+        int rating = ratingService.getRating(GAME, userName);
+        int avgRating = ratingService.getAverageRating(GAME);
 
-        System.out.println("Hru si hodnotil " +ratings+ "*");
+        System.out.println("Hru si hodnotil " +rating+ "* ,priemerne hodnotenie hry " +GAME+ " je " +avgRating+ "*");
     }
 
     /**

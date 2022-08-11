@@ -1,22 +1,28 @@
 package sk.tuke.gamestudio.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
 @Entity
+@Table(uniqueConstraints = {@UniqueConstraint(name = "UniqueGameAndUsername", columnNames = {"game", "userName"})})
 public class Rating implements Serializable {
 
 
     @Id
     @GeneratedValue
     private long ident;
+    @Column(nullable = false, length=64)
     private String game;
+    @Column(nullable = false, length=64)
     private String userName;
+    @Column(columnDefinition = "INT CHECK(rating BETWEEN 1 AND 5) NOT NULL")
     private int rating;
+    @Column(nullable = false)
     private Date ratedOn;
+
+    public Rating() {
+    }
 
     public Rating(String game, String userName, int rating, Date ratedOn) {
         this.game = game;

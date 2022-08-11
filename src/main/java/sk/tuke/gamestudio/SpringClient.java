@@ -14,11 +14,11 @@ public class SpringClient {
         SpringApplication.run(SpringClient.class);
     }
 
-    @Bean
-    public CommandLineRunner runnerJPA(PlaygroundJPA console) {
-        return s -> console.play();
-    }
-
+//    @Bean
+//    public CommandLineRunner runnerJPA(PlaygroundJPA console) {
+//        return s -> console.play();
+//    }
+//
     @Bean
     public CommandLineRunner runner(ConsoleUI console) {
         return s -> console.play();
@@ -36,16 +36,19 @@ public class SpringClient {
 
     @Bean
     public ScoreService scoreService() {
-        return new ScoreServiceJDBC();
+//        return new ScoreServiceJDBC();
+        return new ScoreServiceJPA();
     }
 
     @Bean
     public CommentService commentService() {
-        return new CommentServiceJDBC();
+//        return new CommentServiceJDBC();
+        return new CommentServiceJPA();
     }
 
     @Bean
     public RatingService ratingService() {
-        return new RatingServiceJDBC();
+//        return new RatingServiceJDBC();
+        return new RatingServiceJPA();
     }
 }
