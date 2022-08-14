@@ -3,14 +3,14 @@ package sk.tuke.gamestudio.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestTemplate;
-import sk.tuke.gamestudio.entity.Score;
+import sk.tuke.gamestudio.entity.Comment;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class ScoreServiceRest implements ScoreService {
+public class CommentServiceRest implements CommentService {
 
-//    private String url = "http://localhost:8080/api";
+    //private String url = "http://localhost:8080/api";
 
     @Value("${remote.server.api}")
     private String url;
@@ -19,13 +19,13 @@ public class ScoreServiceRest implements ScoreService {
     private RestTemplate restTemplate;
 
     @Override
-    public void addScore(Score score) {
-        restTemplate.postForEntity(url+"/score",score,Score.class);
+    public void addComment(Comment comment) {
+        restTemplate.postForEntity(url + "/comment", comment, Comment.class);
     }
 
     @Override
-    public List<Score> getBestScores(String game) {
-        return Arrays.asList(restTemplate.getForEntity(url + "/score/" + game,Score[].class).getBody());
+    public List<Comment> getComments(String game) {
+        return Arrays.asList(restTemplate.getForEntity(url + "/comment/" + game, Comment[].class).getBody());
     }
 
     @Override

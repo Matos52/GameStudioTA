@@ -51,13 +51,15 @@ public class SpringClient {
     @Bean
     public CommentService commentService() {
 //        return new CommentServiceJDBC();
-        return new CommentServiceJPA();
+//        return new CommentServiceJPA();
+        return new CommentServiceRest();
     }
 
     @Bean
     public RatingService ratingService() {
 //        return new RatingServiceJDBC();
-        return new RatingServiceJPA();
+//        return new RatingServiceJPA();
+        return new RatingServiceRest();
     }
 
     @Bean
