@@ -1,5 +1,6 @@
 package sk.tuke.gamestudio.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -13,9 +14,13 @@ public class Score implements Serializable {
     @Id
     @GeneratedValue
     private long ident;
+    @Column(nullable = false, length=64)
     private String game;
+    @Column(nullable = false, length=64)
     private String userName;
+    @Column(nullable = false)
     private int points;
+    @Column(nullable = false)
     private Date playedOn;
 
     public Score() {

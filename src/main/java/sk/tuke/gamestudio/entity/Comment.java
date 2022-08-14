@@ -16,11 +16,14 @@ public class Comment implements Serializable {
     @Id
     @GeneratedValue
     private long ident;
+    @Column(nullable = false, length=64)
     private String game;
+    @Column(nullable = false, length=64)
     private String userName;
 
-    @Column(columnDefinition = "VARCHAR (1000) NOT NULL", length = 0)
+    @Column(nullable = false, length = 1000)
     private String comment;
+    @Column(nullable = false)
     private Date commentedOn;
 
     public Comment(String game, String userName, String comment, Date commentedOn) {
