@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.server.DelegatingServerHttpResponse;
 import sk.tuke.gamestudio.entity.*;
 import sk.tuke.gamestudio.minesweeper.core.Field;
 import sk.tuke.gamestudio.minesweeper.core.GameState;
@@ -84,8 +85,12 @@ public class ConsoleUI implements UserInterface {
         this.field = field;
         System.out.println("Zadaj svoje meno:");
         userName = readLine();
+        //ak najde meno, vypise vsetko info
         printAllInformationFromUserName();
-        playerAdding();
+        //vypise vsetkych hracov
+        printAllPlayers();
+        //moznost vyberu mena
+        playerChoiceOfName();
         System.out.println("Vyber obtiaznost:");
         System.out.println("(1) BEGINNER, (2) INTERMEDIATE, (3) EXPERT, (ENTER) NECHAT DEFAULT");
         String level = readLine();
@@ -152,13 +157,23 @@ public class ConsoleUI implements UserInterface {
     private void handlerRating() {
         try {
             rating();
-
         } catch (NumberFormatException e) {
             System.out.println("Musi zadat len cislo, nie text.");
             handlerRating();
         } catch (Exception e) {
             System.out.println(e.getMessage());
             handlerRating();
+        }
+    }
+
+    public void printAllPlayers() {
+        try {
+            List<Player> players = playerServiceJPA.getAllPlayers();
+            for (int i = 0; i < players.size(); i++) {
+                System.out.printf("("+ (i) +") -> %3s\n", players.get(i).getUserName());
+            }
+        } catch (Exception e) {
+            System.err.println("Problem with reading from the database.\n" + e.getMessage());
         }
     }
 
@@ -177,7 +192,7 @@ public class ConsoleUI implements UserInterface {
     public void printAllCountries() {
         try {
             List<Country> countries = countryServiceJPA.getCountries();
-            System.out.println("Vyber si z nasledujuceho zoznamu statov: ");
+            System.out.println("Vyber si z nasledujuceho zoznamu krajin: ");
             for (int i = 0; i < countries.size(); i++) {
                 System.out.printf("("+ (i) +") -> %3s\n", countries.get(i).getCountry());
             }
@@ -213,6 +228,27 @@ public class ConsoleUI implements UserInterface {
         }
     }
 
+    public void playerChoiceOfName() {
+        System.out.println("Chces si vybrat jedno z existujucich mien (0) alebo zacat s novym? (1)");
+        int choice = Integer.parseInt(readLine());
+
+        if(choice == 0) {
+            playerUpdating();
+        } else if (choice == 1) {
+            playerAdding();
+        } else {
+            System.out.println("Nespravne zadanie.");
+            playerChoiceOfName();
+        }
+    }
+
+    public void playerUpdating() {
+        System.out.println("S ktorym menom chces pokracovat?");
+        printAllPlayers();
+        String uName = readLine();
+        playerServiceJPA.getPlayersByUserName(uName);
+    }
+
     public void playerAdding() {
 
         try {
@@ -221,22 +257,59 @@ public class ConsoleUI implements UserInterface {
 
             System.out.println("Zadaj priezvisko: ");
             String lastName = readLine();
-            System.out.println("Ohodnot sa (1-10): ");
-            int selfValue = Integer.parseInt(readLine());
 
+            //Osetrenie vstupu od pouzivatela pre selfvaluation
+            boolean check = true;
+            System.out.println("Ohodnot sa (1-10): ");
+            int selfValue = 0;
+            while (check) {
+                int checker = Integer.parseInt(readLine());
+                if (checker > 0 && checker < 11) {
+                    selfValue = checker;
+                    check = false;
+                } else {
+                    System.out.println("Nespravne zadanie, zadaj cislo od 1 po 10.");
+                }
+            }
+
+            //Osetrenie vstupu od pouzivatela pre occupation
+            check = true;
             printAllOccupations();
-            int choiceOfOcc = Integer.parseInt(readLine());
+            int choiceOfOcc = 0;
+            while (check) {
+                int checker = Integer.parseInt(readLine());
+                if (checker >= 0 && checker < occupations.size()) {
+                    choiceOfOcc = checker;
+                    check = false;
+                } else {
+                    System.out.println("Nespravne zadanie, zadaj cislo podla povolania");
+                    printAllOccupations();
+                }
+            }
 
             printAllCountries();
-            System.out.println("Ak nieje v zozname chces pridat novu? (Y/N)" );
+            System.out.println("Ak nieje v zozname chces pridat novu? (Y/N)");
             String choiceOfCoAddition = readLine();
-            if(choiceOfCoAddition.toLowerCase().equals("y")) {
+            if (choiceOfCoAddition.toLowerCase().equals("y")) {
                 countryAdding();
             }
-            printAllCountries();
-            int choiceOfCo = Integer.parseInt(readLine());
 
-            playerServiceJPA.addPlayer(new Player(userName, lastName, selfValue,countries.get(choiceOfCo),occupations.get(choiceOfOcc)));
+            //Osetrenie vstupu od pouzivatela pre countries
+            check = true;
+            printAllCountries();
+            int choiceOfCo = 0;
+            while(check) {
+                int checker = Integer.parseInt(readLine());
+                if(checker >= 0 && checker < countries.size()) {
+                    choiceOfCo = checker;
+                    check = false;
+                } else {
+                    System.out.println("Nespravne zadanie, zadaj cislo podla krajiny");
+                    printAllCountries();
+                }
+            }
+
+            playerServiceJPA.addPlayer(new Player(userName, lastName, selfValue, countries.get(choiceOfCo), occupations.get(choiceOfOcc)));
             System.out.println("Pridany pouzivatel");
 
         } catch (Exception e) {

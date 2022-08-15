@@ -31,8 +31,6 @@ public class RatingServiceRest implements RatingService {
         Rating rating = restTemplate.getForEntity(url + "/rating/" + game + "/" + username, Rating.class).getBody();
         return rating.getRating();
 
-        //?????
-//return restTemplate.getForEntity(url + "/rating/" + game, Rating.class).getBody().getRating();
     }
 
     @Override

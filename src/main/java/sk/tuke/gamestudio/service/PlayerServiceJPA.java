@@ -28,4 +28,13 @@ public class PlayerServiceJPA implements PlayerService {
 
         return getPlayersByUserName;
     }
+
+    public List<Player> getAllPlayers() {
+
+        List<Player> getAllPlayers = entityManager
+                .createQuery("Select p from Player p")
+                .getResultList();
+
+        return getAllPlayers;
+    }
 }
