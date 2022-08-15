@@ -2,8 +2,7 @@ package sk.tuke.gamestudio.minesweeper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import sk.tuke.gamestudio.entity.*;
-import sk.tuke.gamestudio.service.StudentServiceJPA;
-import sk.tuke.gamestudio.service.StudyGroupServiceJPA;
+import sk.tuke.gamestudio.service.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -28,6 +27,13 @@ public class PlaygroundJPA {
     @Autowired
     private StudyGroupServiceJPA studyGroupServiceJPA;
 
+    @Autowired
+    private CountryServiceJPA countryServiceJPA;
+    @Autowired
+    private OccupationServiceJPA occupationServiceJPA;
+    @Autowired
+    private PlayerServiceJPA playerServiceJPA;
+
     private BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
     Pattern MENO = Pattern.compile("([A-Za-z]*)");
@@ -39,6 +45,43 @@ public class PlaygroundJPA {
             return null;
         }
     }
+    public void play() {
+        System.out.println("Opening JPA playground");
+
+        //Vytvorenie zamestnani a krajin
+
+//        entityManager.persist(new Occupation("ziak"));
+//        entityManager.persist(new Occupation("student"));
+//        entityManager.persist(new Occupation("zamestnanec"));
+//        entityManager.persist(new Occupation("zivnostnik"));
+//        entityManager.persist(new Occupation("nezamestnany"));
+//        entityManager.persist(new Occupation("dochodca"));
+//        entityManager.persist(new Occupation("invalid"));
+//
+//        entityManager.persist(new Country("Slovensko"));
+//        entityManager.persist(new Country("Cesko"));
+//        entityManager.persist(new Country("Polsko"));
+//        entityManager.persist(new Country("Ukrajina"));
+//        entityManager.persist(new Country("Madarsko"));
+//        entityManager.persist(new Country("Rakusko"));
+
+//        entityManager.persist(new Player("Matej", "Matej Regec", 7,new Country("Cina"), new Occupation("chory")));
+
+
+        //Testovanie ako vytvori Player
+
+//        List<Country> countries = entityManager.createQuery("select c from Country c").getResultList();
+//        List<Occupation> occupations = entityManager.createQuery("select o from Occupation o").getResultList();
+//
+//        entityManager.persist(new Player("Matej", "Regec",7, countries.get(1), occupations.get(1)));
+
+        System.out.println("Closing JPA playground");
+    }
+}
+
+
+
+    /*
 
 //Definicia pre studentJPA a studyGroupJPA od mojich kolegov
     //V tejto verzii nepotrebujem pouzivat entityManager lebo volam servicy priamo a v prislusnych servicoch mam managerov
@@ -110,6 +153,8 @@ public class PlaygroundJPA {
         System.out.println("Closing JPA playground");
     }
 }
+*/
+
     //Moja definicia pre studentJPA a studyGroupJPA
         //V tejto verzii pouzivam entityManager
 /*

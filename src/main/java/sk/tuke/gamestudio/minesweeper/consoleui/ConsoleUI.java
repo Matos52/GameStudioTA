@@ -4,13 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import sk.tuke.gamestudio.entity.Comment;
-import sk.tuke.gamestudio.entity.Rating;
-import sk.tuke.gamestudio.entity.Score;
+import sk.tuke.gamestudio.entity.*;
 import sk.tuke.gamestudio.minesweeper.core.Field;
 import sk.tuke.gamestudio.minesweeper.core.GameState;
 import sk.tuke.gamestudio.minesweeper.core.Tile;
@@ -46,6 +45,15 @@ public class ConsoleUI implements UserInterface {
     @Autowired
     private RatingService ratingService;
 
+    @Autowired
+    private CountryServiceJPA countryServiceJPA;
+
+    @Autowired
+    private OccupationServiceJPA occupationServiceJPA;
+
+    @Autowired
+    private PlayerServiceJPA playerServiceJPA;
+
     private Settings setting;
 
     private static final String GAME = "minesweeper";
@@ -76,6 +84,8 @@ public class ConsoleUI implements UserInterface {
         this.field = field;
         System.out.println("Zadaj svoje meno:");
         userName = readLine();
+        printAllInformationFromUserName();
+        playerAdding();
         System.out.println("Vyber obtiaznost:");
         System.out.println("(1) BEGINNER, (2) INTERMEDIATE, (3) EXPERT, (ENTER) NECHAT DEFAULT");
         String level = readLine();
@@ -149,6 +159,88 @@ public class ConsoleUI implements UserInterface {
         } catch (Exception e) {
             System.out.println(e.getMessage());
             handlerRating();
+        }
+    }
+
+    public void printAllOccupations() {
+        try {
+            List<Occupation> occupations = occupationServiceJPA.getOccupations();
+            System.out.println("Vyber si z nasledujuceho zoznamu povolani: ");
+            for (int i = 0; i < occupations.size(); i++) {
+                System.out.printf("("+ (i) +") -> %3s\n", occupations.get(i).getOccupation());
+            }
+        } catch (Exception e) {
+            System.err.println("Problem with reading from the database.\n" + e.getMessage());
+        }
+    }
+
+    public void printAllCountries() {
+        try {
+            List<Country> countries = countryServiceJPA.getCountries();
+            System.out.println("Vyber si z nasledujuceho zoznamu statov: ");
+            for (int i = 0; i < countries.size(); i++) {
+                System.out.printf("("+ (i) +") -> %3s\n", countries.get(i).getCountry());
+            }
+        } catch (Exception e) {
+            System.err.println("Problem with reading from the database.\n" + e.getMessage());
+        }
+    }
+
+    public void printAllInformationFromUserName() {
+        try {
+            List<Player> players = playerServiceJPA.getPlayersByUserName(userName);
+            System.out.println("Informacie o hracovi: ");
+            for (int i = 0; i < players.size(); i++) {
+                System.out.printf("Meno - %2s, Priezvisko - %2s, Hodnotenie - %2d, Bydlisko - %2s, Povolanie - %2s\n",
+                        players.get(i).getUserName(),
+                        players.get(i).getFullName(),
+                        players.get(i).getSelfEvaluation(),
+                        players.get(i).getCountry().getCountry(),
+                        players.get(i).getOccupation().getOccupation());
+            }
+        } catch (Exception e) {
+            System.err.println("Problem with reading from the database.\n" + e.getMessage());
+        }
+    }
+
+    public void countryAdding() {
+        try {
+            System.out.println("Zadaj nazov krajiny ktoru chces pridat: ");
+            String nameOfCountry = readLine();
+            countryServiceJPA.addCountry(new Country(nameOfCountry));
+        } catch (Exception e) {
+            System.err.println("Problem with writing to the database.\n" + e.getMessage());
+        }
+    }
+
+    public void playerAdding() {
+
+        try {
+            List<Occupation> occupations = occupationServiceJPA.getOccupations();
+            List<Country> countries = countryServiceJPA.getCountries();
+
+            System.out.println("Zadaj priezvisko: ");
+            String lastName = readLine();
+            System.out.println("Ohodnot sa (1-10): ");
+            int selfValue = Integer.parseInt(readLine());
+
+            printAllOccupations();
+            int choiceOfOcc = Integer.parseInt(readLine());
+
+            printAllCountries();
+            System.out.println("Ak nieje v zozname chces pridat novu? (Y/N)" );
+            String choiceOfCoAddition = readLine();
+            if(choiceOfCoAddition.toLowerCase().equals("y")) {
+                countryAdding();
+            }
+            printAllCountries();
+            int choiceOfCo = Integer.parseInt(readLine());
+
+            playerServiceJPA.addPlayer(new Player(userName, lastName, selfValue,countries.get(choiceOfCo),occupations.get(choiceOfOcc)));
+            System.out.println("Pridany pouzivatel");
+
+        } catch (Exception e) {
+            System.err.println("Problem with writing to the database.\n" + e.getMessage());
         }
     }
 

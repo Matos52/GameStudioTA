@@ -44,22 +44,22 @@ public class SpringClient {
     @Bean
     public ScoreService scoreService() {
 //        return new ScoreServiceJDBC();
-//        return new ScoreServiceJPA();
-        return new ScoreServiceRest();
+        return new ScoreServiceJPA();
+//        return new ScoreServiceRest();
     }
 
     @Bean
     public CommentService commentService() {
 //        return new CommentServiceJDBC();
-//        return new CommentServiceJPA();
-        return new CommentServiceRest();
+        return new CommentServiceJPA();
+//        return new CommentServiceRest();
     }
 
     @Bean
     public RatingService ratingService() {
 //        return new RatingServiceJDBC();
-//        return new RatingServiceJPA();
-        return new RatingServiceRest();
+        return new RatingServiceJPA();
+//        return new RatingServiceRest();
     }
 
     @Bean
@@ -70,6 +70,21 @@ public class SpringClient {
     @Bean
     public StudyGroupServiceJPA studyGroupServiceJPA() {
         return new StudyGroupServiceJPA();
+    }
+
+    @Bean
+    public CountryServiceJPA countryServiceJPA() {
+        return new CountryServiceJPA();
+    }
+
+    @Bean
+    public OccupationServiceJPA occupationServiceJPA() {
+        return new OccupationServiceJPA();
+    }
+
+    @Bean
+    public PlayerServiceJPA playerServiceJPA() {
+        return new PlayerServiceJPA();
     }
 
     @Bean
