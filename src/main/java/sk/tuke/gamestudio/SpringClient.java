@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.web.client.RestTemplate;
+import sk.tuke.gamestudio.kamene.consoleUI.ConsoleUIKamene;
 import sk.tuke.gamestudio.minesweeper.PlaygroundJPA;
 import sk.tuke.gamestudio.minesweeper.consoleui.ConsoleUI;
 import sk.tuke.gamestudio.service.*;
@@ -21,14 +22,23 @@ public class SpringClient {
        new SpringApplicationBuilder(SpringClient.class).web(WebApplicationType.NONE).run(args);
     }
 
-//    @Bean
-//    public CommandLineRunner runnerJPA(PlaygroundJPA console) {
-//        return s -> console.play();
-//    }
+    //Sluzi na spustenie testovacej triedy Playground
+    //@Bean
+    public CommandLineRunner runnerJPA(PlaygroundJPA console) {
+        return s -> console.play();
+    }
 
-    @Bean
+    //Sluzi na spustenie hry Minesweeper
+    //@Bean
     public CommandLineRunner runner(ConsoleUI console) {
         return s -> console.play();
+    }
+
+
+    //Sluzi na spustenie hry Kamene
+    @Bean
+    public CommandLineRunner runner(ConsoleUIKamene consoleUIKamene) {
+        return s -> consoleUIKamene.play();
     }
 
     @Bean
@@ -39,6 +49,11 @@ public class SpringClient {
     @Bean
     public ConsoleUI console() {
         return new ConsoleUI();
+    }
+
+    @Bean
+    public  ConsoleUIKamene consoleUIKamene() {
+        return new ConsoleUIKamene();
     }
 
     @Bean
