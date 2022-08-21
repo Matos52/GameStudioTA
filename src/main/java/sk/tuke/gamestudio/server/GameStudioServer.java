@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
 import sk.tuke.gamestudio.SpringClient;
+import sk.tuke.gamestudio.entity.Occupation;
 import sk.tuke.gamestudio.minesweeper.PlaygroundJPA;
 import sk.tuke.gamestudio.minesweeper.consoleui.ConsoleUI;
 import sk.tuke.gamestudio.service.*;
@@ -38,5 +39,17 @@ public class GameStudioServer {
     public RatingService ratingService() {
 //        return new RatingServiceJDBC();
         return new RatingServiceJPA();
+    }
+    @Bean
+    public CountryService countryService() {
+        return new CountryServiceJPA();
+    }
+    @Bean
+    public OccupationService occupationService() {
+        return new OccupationServiceJPA();
+    }
+    @Bean
+    public PlayerService playerService() {
+        return new PlayerServiceJPA();
     }
 }
