@@ -53,6 +53,10 @@ public class Field {
         generate();
     }
 
+    public Tile[][] getTiles() {
+        return tiles;
+    }
+
     public int getRowCount() {
         return rowCount;
     }

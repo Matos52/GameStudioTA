@@ -51,11 +51,17 @@ table.scores {
     border: black 2px;
 }
 
+table.scores caption {
+    font-weight: bold;
+    font-size: 25;
+    color: #FFFFFF;
+    background-color: black;
+}
+
 table.scores th {
     font-weight: bold;
     color: #FFFFFF;
     background-color: dimgray;
-
 }
 
 table.scores tr:nth-child(even) {

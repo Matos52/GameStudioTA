@@ -32,13 +32,43 @@
 
 </div>
 
-<div th:utext="${@minesweeperController.fieldAsHtml}">
+<!--<div th:utext="${@minesweeperController.fieldAsHtml}"></div>-->
+
+<div>
+    <table class='minefield'>
+        <tr th:each="row: ${minesweeperField}">
+            <td th:each="tile: ${row}"
+                th:attr="class=${@minesweeperController.getTileClass(tile)}">
+                <a th:attr="href='/minesweeper?row='+${rowStat.index}+'&column='+${tileStat.index}">
+                    <span th:text="${@minesweeperController.getTileText(tile)}"></span>
+                </a>
+            </td>
+        </tr>
+    </table>
+</div>
+<br>
+<!--<aside th:text="${message}"></aside>-->
+
+<div>
+    <table class="scores">
+        <caption> Best Scores </caption>
+        <th> Player </th>
+        <th> Points </th>
+        <th> Date </th>
+
+        <tr th:each="score: ${minesBestScores}">
+            <td th:text="${score.getUserName()}">
+            <td th:text="${score.getPoints()}">
+            <td th:text="${score.getPlayedOn()}">
+            </td>
+        </tr>
+    </table>
+</div>
 
 
     <!--<div th:text="${1+2}"></div>-->
     <!--<div th:text="${@minesweeperController.getCurrTime()}"></div>-->
     <!--<div th:text="${@minesweeperController.currTime}"></div>-->
-
 
 </body>
 </html>

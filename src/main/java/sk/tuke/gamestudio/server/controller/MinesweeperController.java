@@ -1,13 +1,17 @@
 package sk.tuke.gamestudio.server.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.WebApplicationContext;
 import sk.tuke.gamestudio.minesweeper.core.Clue;
 import sk.tuke.gamestudio.minesweeper.core.Field;
+import sk.tuke.gamestudio.minesweeper.core.GameState;
 import sk.tuke.gamestudio.minesweeper.core.Tile;
+import sk.tuke.gamestudio.service.ScoreServiceJPA;
 
 import java.util.Date;
 
@@ -20,8 +24,15 @@ public class MinesweeperController {
 
     private boolean marking = false;
 
+    private String GAME = "minesweeper";
+
+    GameState gameState;
+
+    @Autowired
+    ScoreServiceJPA scoreServiceJPA;
+
     @RequestMapping
-    public String minesweeper(@RequestParam(required = false) Integer row, @RequestParam(required = false) Integer column){
+    public String minesweeper(@RequestParam(required = false) Integer row, @RequestParam(required = false) Integer column, Model model){
 
         if(row != null && column != null){
 
@@ -32,18 +43,25 @@ public class MinesweeperController {
             }
         }
 
+//        if(gameState == GameState.SOLVED) {
+//
+//        }
+
+        prepareModel(model);
         return "minesweeper";
     }
 
     @RequestMapping("/mark")
-    public  String changeMarking(){
+    public  String changeMarking(Model model){
         marking = !marking;
+        prepareModel(model);
         return "minesweeper";
     }
 
     @RequestMapping("/new")
-    public  String newGame(){
+    public  String newGame(Model model){
         field = new Field(9,9,10);
+        prepareModel(model);
         return "minesweeper";
     }
 
@@ -73,38 +91,36 @@ public class MinesweeperController {
         sb.append("</table>\n");
 */
 
-    public String getFieldAsHtml(){
+//    public String getFieldAsHtml(){
+//
+//        int rowCount = field.getRowCount();
+//        int colCount = field.getColumnCount();
+//
+//        StringBuilder sb = new StringBuilder();
+//
+//        sb.append("<table class='minefield'>\n");
+//
+//        for (int row = 0; row<rowCount;row++){
+//            sb.append("<tr>\n");
+//
+//            for (int col = 0; col<colCount;col++){
+//                Tile tile = field.getTile(row,col);
+//
+//                sb.append("<td class='" + getTileClass(tile) + "'> ");
+//                sb.append("<a href='/minesweeper?row="+row+"&column="+col+"'> ");
+//                sb.append("<span>" + getTileText(tile) + "</span>");
+//                sb.append(" </a>\n");
+//                sb.append(" </td>\n");
+//
+//            }
+//            sb.append("</tr>\n");
+//        }
+//
+//        sb.append("</table>\n");
+//        return sb.toString();
+//    }
 
-        int rowCount = field.getRowCount();
-        int colCount = field.getColumnCount();
-
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("<table class='minefield'>\n");
-
-        for (int row = 0; row<rowCount;row++){
-            sb.append("<tr>\n");
-
-            for (int col = 0; col<colCount;col++){
-                Tile tile = field.getTile(row,col);
-
-                sb.append("<td class='" + getTileClass(tile) + "'> ");
-                sb.append("<a href='/minesweeper/?row="+row+"&column="+col+"'> ");
-                sb.append("<span>" + getTileText(tile) + "</span>");
-                sb.append(" </a>\n");
-                sb.append(" </td>\n");
-
-            }
-            sb.append("</tr>\n");
-        }
-
-
-        sb.append("</table>\n");
-
-        return sb.toString();
-    }
-
-    private String getTileText(Tile tile){
+    public String getTileText(Tile tile){
         switch (tile.getState()){
             case CLOSED:
                 return "-";
@@ -121,7 +137,7 @@ public class MinesweeperController {
         }
     }
 
-    private String getTileClass(Tile tile) {
+    public String getTileClass(Tile tile) {
         switch (tile.getState()) {
             case OPEN:
                 if (tile instanceof Clue)
@@ -135,5 +151,11 @@ public class MinesweeperController {
             default:
                 throw new RuntimeException("Unexpected tile state");
         }
+    }
+
+    private void prepareModel(Model model) {
+        model.addAttribute("message","Best scores: ");
+        model.addAttribute("minesweeperField", field.getTiles());
+        model.addAttribute("minesBestScores", scoreServiceJPA.getBestScores(GAME));
     }
 }
