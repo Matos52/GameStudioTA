@@ -14,8 +14,10 @@
 
 <body>
 
+<!--Titulok s nazvom hry-->
 <h2>Minesweeper</h2>
 
+<!--Funkcie na switch medzi otv./ozn. a funkcia na spustenie novej hry-->
 <div class="minesControl">
     <span th:if="${@minesweeperController.marking}">
         Prave oznacujes.
@@ -34,6 +36,25 @@
 
 <!--<div th:utext="${@minesweeperController.fieldAsHtml}"></div>-->
 
+<!--Vypis score po skonceni hry-->
+<div>
+    <table class="scores">
+        <caption> Your score is </caption>
+        <th th:text="${finalMessage}">
+        </th>
+    </table>
+</div>
+
+<!--Vypis stavu hry-->
+<div>
+    <table class="scores">
+        <caption> Game State </caption>
+        <th th:text="${minesGameState}">
+        </th>
+    </table>
+</div>
+
+<!--Vypis herneho pola-->
 <div>
     <table class='minefield'>
         <tr th:each="row: ${minesweeperField}">
@@ -49,6 +70,7 @@
 <br>
 <!--<aside th:text="${message}"></aside>-->
 
+<!--Vypis tabulky bestScores-->
 <div>
     <table class="scores">
         <caption> Best Scores </caption>

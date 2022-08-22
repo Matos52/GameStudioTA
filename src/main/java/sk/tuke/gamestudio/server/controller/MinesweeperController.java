@@ -7,11 +7,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.WebApplicationContext;
+import sk.tuke.gamestudio.entity.Score;
 import sk.tuke.gamestudio.minesweeper.core.Clue;
 import sk.tuke.gamestudio.minesweeper.core.Field;
 import sk.tuke.gamestudio.minesweeper.core.GameState;
 import sk.tuke.gamestudio.minesweeper.core.Tile;
-import sk.tuke.gamestudio.service.ScoreServiceJPA;
+import sk.tuke.gamestudio.service.ScoreService;
 
 import java.util.Date;
 
@@ -26,10 +27,8 @@ public class MinesweeperController {
 
     private String GAME = "minesweeper";
 
-    GameState gameState;
-
     @Autowired
-    ScoreServiceJPA scoreServiceJPA;
+    ScoreService scoreService;
 
     @RequestMapping
     public String minesweeper(@RequestParam(required = false) Integer row, @RequestParam(required = false) Integer column, Model model){
@@ -43,9 +42,12 @@ public class MinesweeperController {
             }
         }
 
-//        if(gameState == GameState.SOLVED) {
-//
-//        }
+        if(field.getState() == GameState.SOLVED) {
+            finishModel(model);
+            String userName = "Anonym";
+            int gameScore = field.getScore();
+            scoreService.addScore(new Score(GAME, userName, gameScore, new Date()));
+        }
 
         prepareModel(model);
         return "minesweeper";
@@ -156,6 +158,11 @@ public class MinesweeperController {
     private void prepareModel(Model model) {
         model.addAttribute("message","Best scores: ");
         model.addAttribute("minesweeperField", field.getTiles());
-        model.addAttribute("minesBestScores", scoreServiceJPA.getBestScores(GAME));
+        model.addAttribute("minesBestScores", scoreService.getBestScores(GAME));
+        model.addAttribute("minesGameState", field.getState());
+    }
+
+    private void finishModel(Model model) {
+        model.addAttribute("finalMessage", field.getScore());
     }
 }

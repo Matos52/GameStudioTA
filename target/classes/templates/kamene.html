@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="sk">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Stefan Korecko" />
+    <link rel="stylesheet"
+          href="/css/mines.css"
+          media="screen" />
+
+
+    <title>GameStudio - Kamene</title>
+</head>
+<body>
+
+<!--Titulok s nazvom hry-->
+<h2>Kamene</h2>
+
+<!--Funkcie na switch medzi otv./ozn. a funkcia na spustenie novej hry-->
+<div class="minesControl">
+
+    <a  class="abutton" href="/kamene/new">Nova hra</a>
+
+</div>
+
+<!--Vypis herneho pola-->
+<div>
+    <table class='minefield'>
+        <tr th:each="row: ${kameneField}">
+            <td th:each="tile: ${row}">
+                <span th:text="${@kameneController.getTileText(tile)}"></span>
+            </td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>
