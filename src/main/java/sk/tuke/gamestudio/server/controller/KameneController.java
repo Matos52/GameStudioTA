@@ -32,8 +32,8 @@ public class KameneController {
 
     @RequestMapping("/new")
     public String newGame(Model model){
-        field = new Field(4,4);
         prepareModel(model);
+        field = new Field(4,4);
         return "kamene";
     }
 

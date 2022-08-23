@@ -18,7 +18,6 @@ import sk.tuke.gamestudio.service.*;
 public class GameStudioServer {
 
     public static void main(String[] args) {
-
         SpringApplication.run(GameStudioServer.class);
 
     }

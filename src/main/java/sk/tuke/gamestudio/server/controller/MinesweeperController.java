@@ -21,32 +21,44 @@ import java.util.Date;
 @Scope(WebApplicationContext.SCOPE_SESSION)
 public class MinesweeperController {
 
+    @Autowired
+    private UserController userController;
+    @Autowired
+    private ScoreService scoreService;
     private Field field = new Field(9,9,10);
 
+    /**
+     * false if opening tiles, true if marking tiles
+     */
     private boolean marking = false;
 
-    private String GAME = "minesweeper";
+    /**
+     * false if finished (won or lost), true if playing the game
+     */
+    private boolean isPlaying = true;
 
-    @Autowired
-    ScoreService scoreService;
 
     @RequestMapping
     public String minesweeper(@RequestParam(required = false) Integer row, @RequestParam(required = false) Integer column, Model model){
 
         if(row != null && column != null){
 
-            if(marking){
-                field.markTile(row,column);
-            }else{
-                field.openTile(row,column);
+            if(this.field.getState()==GameState.PLAYING){
+                if(marking){
+                    this.field.markTile(row,column);
+                }else{
+                    this.field.openTile(row,column);
+                }
             }
-        }
 
-        if(field.getState() == GameState.SOLVED) {
-            finishModel(model);
-            String userName = "Anonym";
-            int gameScore = field.getScore();
-            scoreService.addScore(new Score(GAME, userName, gameScore, new Date()));
+            if(this.field.getState()!= GameState.PLAYING && this.isPlaying==true){ //I just won/lose
+                this.isPlaying=false;
+
+                if(userController.isLogged()) {
+                    Score newScore = new Score("minesweeper", "Anonym", this.field.getScore(), new Date());
+                    scoreService.addScore(newScore);
+                }
+            }
         }
 
         prepareModel(model);
@@ -55,14 +67,18 @@ public class MinesweeperController {
 
     @RequestMapping("/mark")
     public  String changeMarking(Model model){
-        marking = !marking;
+        if(this.field.getState()==GameState.PLAYING){
+            this.marking = !this.marking;
+        }
         prepareModel(model);
         return "minesweeper";
     }
 
     @RequestMapping("/new")
     public  String newGame(Model model){
-        field = new Field(9,9,10);
+        this.field = new Field(9,9,10);
+        this.isPlaying = true;
+        this.marking = false;
         prepareModel(model);
         return "minesweeper";
     }
@@ -72,56 +88,52 @@ public class MinesweeperController {
     }
 
     public boolean getMarking(){
-        return marking;
+        return this.marking;
     }
-    /*
-            sb.append("<table class='minefield'>\n");
-        for (int row = 0; row < field.getRowCount(); row++) {
-        sb.append("<tr>\n");
-        for (int column = 0; column < field.getColumnCount(); column++) {
-            var tile = field.getTile(row, column);
-            sb.append("<td class='" + getTileClass(tile) + "'>\n");
-            if (tile.getState() != Tile.State.OPEN)
-                sb.append("<a href='/minesweeper?row=" + row + "&column=" + column + "'>\n");
-            sb.append("<span>" + getTileText(tile) + "</span>");
-            if (tile.getState() != Tile.State.OPEN)
-                sb.append("</a>\n");
-            sb.append("</td>\n");
+
+
+    /**
+     * Generates the full table with the minesweeper field.
+     * (now unused, this is transformed to the template)
+     * @return String with HTML of the table
+     */
+    public String getFieldAsHtml(){
+
+        int rowCount = this.field.getRowCount();
+        int colCount = this.field.getColumnCount();
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("<table class='minefield'>\n");
+
+        for (int row = 0; row<rowCount;row++){
+            sb.append("<tr>\n");
+
+            for (int col = 0; col<colCount;col++){
+                Tile tile = this.field.getTile(row,col);
+
+                sb.append("<td class='" + getTileClass(tile) + "'> ");
+                sb.append("<a href='/minesweeper?row="+row+"&column="+col+"'> ");
+                sb.append("<span>" + getTileText(tile) + "</span>");
+                sb.append(" </a>\n");
+                sb.append(" </td>\n");
+
+            }
+            sb.append("</tr>\n");
         }
-        sb.append("</tr>\n");
-    }
+
+
         sb.append("</table>\n");
-*/
 
-//    public String getFieldAsHtml(){
-//
-//        int rowCount = field.getRowCount();
-//        int colCount = field.getColumnCount();
-//
-//        StringBuilder sb = new StringBuilder();
-//
-//        sb.append("<table class='minefield'>\n");
-//
-//        for (int row = 0; row<rowCount;row++){
-//            sb.append("<tr>\n");
-//
-//            for (int col = 0; col<colCount;col++){
-//                Tile tile = field.getTile(row,col);
-//
-//                sb.append("<td class='" + getTileClass(tile) + "'> ");
-//                sb.append("<a href='/minesweeper?row="+row+"&column="+col+"'> ");
-//                sb.append("<span>" + getTileText(tile) + "</span>");
-//                sb.append(" </a>\n");
-//                sb.append(" </td>\n");
-//
-//            }
-//            sb.append("</tr>\n");
-//        }
-//
-//        sb.append("</table>\n");
-//        return sb.toString();
-//    }
+        return sb.toString();
+    }
 
+    /**
+     * Gets the text that may be displayed inside a HTML element representing 1 tile
+     * Now public as it is called from the template
+     * @param tile - the Tile object the text is extracted from
+     * @return the text that may be displayed inside a HTML element representing the Tile tile
+     */
     public String getTileText(Tile tile){
         switch (tile.getState()){
             case CLOSED:
@@ -139,6 +151,12 @@ public class MinesweeperController {
         }
     }
 
+    /**
+     * Gets the HTML class of the <td> element representing the Tile tile
+     * Now public as it is called from the template
+     * @param tile - the Tile object the class is assigned to
+     * @return String with the HTML class of the <td> element representing the Tile tile
+     */
     public String getTileClass(Tile tile) {
         switch (tile.getState()) {
             case OPEN:
@@ -155,14 +173,30 @@ public class MinesweeperController {
         }
     }
 
-    private void prepareModel(Model model) {
-        model.addAttribute("message","Best scores: ");
-        model.addAttribute("minesweeperField", field.getTiles());
-        model.addAttribute("minesBestScores", scoreService.getBestScores(GAME));
-        model.addAttribute("minesGameState", field.getState());
-    }
+    /**
+     * Fills the Spring MVC model object for the Thymeleaf template
+     * @param model - the Spring MVC model
+     */
+    private void prepareModel(Model model){
 
-    private void finishModel(Model model) {
-        model.addAttribute("finalMessage", field.getScore());
+        String gameStatus="";
+        if(this.field.getState()== GameState.FAILED){
+            gameStatus="Prehral si";
+        }else if(this.field.getState()== GameState.SOLVED){
+            gameStatus="Vyhral si (skóre: "+this.field.getScore()+")";
+        }else{
+            gameStatus="Hraješ a ";
+            if(this.marking){
+                gameStatus+="označuješ";
+            }else{
+                gameStatus+="otváraš";
+            }
+        }
+
+        model.addAttribute("isPlaying",this.isPlaying);
+        model.addAttribute("marking",this.marking);
+        model.addAttribute("gameStatus",gameStatus);
+        model.addAttribute("minesweeperField",this.field.getTiles());
+        model.addAttribute("bestScores",scoreService.getBestScores("minesweeper"));
     }
 }

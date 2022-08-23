@@ -1,12 +1,16 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" lang="sk">
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout/layoutGamestudio.html}"
+        lang="sk">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="author" content="Stefan Korecko" />
-    <link rel="stylesheet"
-          href="/css/mines.css"
-          media="screen" />
+<!--    <meta charset="UTF-8" />-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1">-->
+<!--    <meta name="author" content="Stefan Korecko" />-->
+<!--    <link rel="stylesheet"-->
+<!--          href="/css/gamestudio.css"-->
+<!--          media="screen" />-->
 
 
     <title>GameStudio - Minesweeper</title>
@@ -14,83 +18,86 @@
 
 <body>
 
-<!--Titulok s nazvom hry-->
-<h2>Minesweeper</h2>
-
-<!--Funkcie na switch medzi otv./ozn. a funkcia na spustenie novej hry-->
-<div class="minesControl">
-    <span th:if="${@minesweeperController.marking}">
-        Prave oznacujes.
-        <a  class="abutton" href="/minesweeper/mark">Zmen na otvaranie.</a>
-    </span>
-
-    <span th:if="not ${@minesweeperController.marking}">
-        Prave otvaras.
-        <a  class="abutton" href="/minesweeper/mark">Zmen na oznacovanie.</a>
-    </span>
+<main layout:fragment="content">
 
 
-    <a  class="abutton" href="/minesweeper/new">Nova hra</a>
+    <!--Titulok s nazvom hry-->
+    <h2>Minesweeper</h2>
 
-</div>
-
-<!--<div th:utext="${@minesweeperController.fieldAsHtml}"></div>-->
-
-<!--Vypis score po skonceni hry-->
-<div>
-    <table class="scores">
-        <caption> Your score is </caption>
-        <th th:text="${finalMessage}">
-        </th>
-    </table>
-</div>
-
-<!--Vypis stavu hry-->
-<div>
-    <table class="scores">
-        <caption> Game State </caption>
-        <th th:text="${minesGameState}">
-        </th>
-    </table>
-</div>
-
-<!--Vypis herneho pola-->
-<div>
-    <table class='minefield'>
-        <tr th:each="row: ${minesweeperField}">
-            <td th:each="tile: ${row}"
-                th:attr="class=${@minesweeperController.getTileClass(tile)}">
-                <a th:attr="href='/minesweeper?row='+${rowStat.index}+'&column='+${tileStat.index}">
-                    <span th:text="${@minesweeperController.getTileText(tile)}"></span>
-                </a>
-            </td>
-        </tr>
-    </table>
-</div>
-<br>
-<!--<aside th:text="${message}"></aside>-->
-
-<!--Vypis tabulky bestScores-->
-<div>
-    <table class="scores">
-        <caption> Best Scores </caption>
-        <th> Player </th>
-        <th> Points </th>
-        <th> Date </th>
-
-        <tr th:each="score: ${minesBestScores}">
-            <td th:text="${score.getUserName()}">
-            <td th:text="${score.getPoints()}">
-            <td th:text="${score.getPlayedOn()}">
-            </td>
-        </tr>
-    </table>
-</div>
+    <!--Funkcie na switch medzi otv./ozn. a funkcia na spustenie novej hry-->
+    <div class="minesControl">
+        <span th:text="${gameStatus}"></span>
+        <a th:if="${marking and isPlaying}"  class="abutton" href="/minesweeper/mark">Na otváranie.</a>
+        <a th:if=" ${not marking and isPlaying}" class="abutton" href="/minesweeper/mark">Na označovanie.</a>
 
 
-    <!--<div th:text="${1+2}"></div>-->
-    <!--<div th:text="${@minesweeperController.getCurrTime()}"></div>-->
-    <!--<div th:text="${@minesweeperController.currTime}"></div>-->
+        <a  class="abutton" href="/minesweeper/new">Nová hra</a>
+
+    </div>
+
+    <!--<div th:utext="${@minesweeperController.fieldAsHtml}"></div>-->
+
+<!--    &lt;!&ndash;Vypis score po skonceni hry&ndash;&gt;-->
+<!--    <div>-->
+<!--        <table class="scores">-->
+<!--            <caption> Your score is </caption>-->
+<!--            <th th:text="${finalMessage}">-->
+<!--            </th>-->
+<!--        </table>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash;Vypis stavu hry&ndash;&gt;-->
+<!--    <div>-->
+<!--        <table class="scores">-->
+<!--            <caption> Game State </caption>-->
+<!--            <th th:text="${minesGameState}">-->
+<!--            </th>-->
+<!--        </table>-->
+<!--    </div>-->
+
+    <!--Vypis herneho pola-->
+    <!--The href attribute specifies the link's destination-->
+    <section>
+        <table class='minefield'>
+            <tr th:each="row: ${minesweeperField}">
+                <td th:each="tile: ${row}"
+                    th:attr="class=${@minesweeperController.getTileClass(tile)}">
+                    <a th:if="${isPlaying}" th:attr="href='/minesweeper?row='+${rowStat.index}+'&column='+${tileStat.index}">
+                        <span th:text="${@minesweeperController.getTileText(tile)}"></span>
+                    </a>
+
+                    <span th:if="not ${isPlaying}" th:text="${@minesweeperController.getTileText(tile)}"></span>
+
+                </td>
+            </tr>
+        </table>
+    </section>
+
+    <!--<aside th:text="${message}"></aside>-->
+
+    <!--Vypis tabulky bestScores-->
+    <section>
+        <h3>Najlepšie skóre</h3>
+        <table class="scores">
+            <tr>
+                <th>Poradie</th>
+                <th>Meno</th>
+                <th>Body</th>
+                <th>Dátum a čas hry</th>
+            </tr>
+            <tr th:each="score: ${bestScores}">
+                <td th:text="${scoreStat.index+1}"></td>
+                <td th:text="${score.userName}"></td>
+                <td th:text="${score.points}"></td>
+                <td th:text="${score.playedOn}"></td>
+            </tr>
+        </table>
+    </section>
+
+        <!--<div th:text="${1+2}"></div>-->
+        <!--<div th:text="${@minesweeperController.getCurrTime()}"></div>-->
+        <!--<div th:text="${@minesweeperController.currTime}"></div>-->
+</main>
 
 </body>
 </html>
