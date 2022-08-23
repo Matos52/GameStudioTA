@@ -33,4 +33,9 @@ public class RatingWebServiceRest {
     public void setRating(@RequestBody Rating rating) {
         ratingService.setRating(rating);
     }
+
+    @GetMapping("/{game}")
+    public int getAverageRating(@PathVariable String game) {
+        return ratingService.getAverageRating(game);
+    }
 }

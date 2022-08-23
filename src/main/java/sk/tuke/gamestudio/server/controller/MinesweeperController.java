@@ -7,11 +7,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.WebApplicationContext;
+import sk.tuke.gamestudio.entity.Comment;
+import sk.tuke.gamestudio.entity.Rating;
 import sk.tuke.gamestudio.entity.Score;
 import sk.tuke.gamestudio.minesweeper.core.Clue;
 import sk.tuke.gamestudio.minesweeper.core.Field;
 import sk.tuke.gamestudio.minesweeper.core.GameState;
 import sk.tuke.gamestudio.minesweeper.core.Tile;
+import sk.tuke.gamestudio.service.CommentService;
+import sk.tuke.gamestudio.service.RatingService;
 import sk.tuke.gamestudio.service.ScoreService;
 
 import java.util.Date;
@@ -25,12 +29,18 @@ public class MinesweeperController {
     private UserController userController;
     @Autowired
     private ScoreService scoreService;
+    @Autowired
+    private CommentService commentService;
+    @Autowired
+    private RatingService ratingService;
     private Field field = new Field(9,9,10);
 
     /**
      * false if opening tiles, true if marking tiles
      */
     private boolean marking = false;
+
+    private final String GAME = "minesweeper";
 
     /**
      * false if finished (won or lost), true if playing the game
@@ -55,7 +65,7 @@ public class MinesweeperController {
                 this.isPlaying=false;
 
                 if(userController.isLogged()) {
-                    Score newScore = new Score("minesweeper", "Anonym", this.field.getScore(), new Date());
+                    Score newScore = new Score(GAME, userController.getLoggedUser(), this.field.getScore(), new Date());
                     scoreService.addScore(newScore);
                 }
             }
@@ -173,6 +183,33 @@ public class MinesweeperController {
         }
     }
 
+    @RequestMapping("/comment")
+    public String comment(String comment, Model model) {
+        if(userController.isLogged()) {
+            Comment newComment = new Comment(GAME,userController.getLoggedUser(),comment,new Date());
+            commentService.addComment(newComment);
+        } else {
+            Comment newComment = new Comment(GAME,"Anonym",comment,new Date());
+            commentService.addComment(newComment);
+        }
+        prepareModel(model);
+        return "minesweeper";
+    }
+
+    @RequestMapping("/rating")
+    public String rating(int rating, Model model) {
+        Rating newRating;
+        if(userController.isLogged()) {
+            newRating = new Rating(GAME,userController.getLoggedUser(),rating,new Date());
+            ratingService.setRating(newRating);
+        } else {
+            newRating = new Rating(GAME,"Anonym",rating,new Date());
+            ratingService.setRating(newRating);
+        }
+        prepareModel(model);
+        return "minesweeper";
+    }
+
     /**
      * Fills the Spring MVC model object for the Thymeleaf template
      * @param model - the Spring MVC model
@@ -197,6 +234,8 @@ public class MinesweeperController {
         model.addAttribute("marking",this.marking);
         model.addAttribute("gameStatus",gameStatus);
         model.addAttribute("minesweeperField",this.field.getTiles());
-        model.addAttribute("bestScores",scoreService.getBestScores("minesweeper"));
+        model.addAttribute("bestScores",scoreService.getBestScores(GAME));
+        model.addAttribute("getComments",commentService.getComments(GAME));
+        model.addAttribute("getAvgRating", ratingService.getAverageRating(GAME));
     }
 }

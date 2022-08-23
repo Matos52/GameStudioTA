@@ -77,8 +77,8 @@
 
     <!--Vypis tabulky bestScores-->
     <section>
-        <h3>Najlepšie skóre</h3>
         <table class="scores">
+            <h3>Najlepšie skóre</h3>
             <tr>
                 <th>Poradie</th>
                 <th>Meno</th>
@@ -90,6 +90,55 @@
                 <td th:text="${score.userName}"></td>
                 <td th:text="${score.points}"></td>
                 <td th:text="${score.playedOn}"></td>
+            </tr>
+        </table>
+    </section>
+
+    <br>
+
+    <!--Pridanie komentaru k hre-->
+    <form action="/minesweeper/comment" method="post">
+        <label for="comment"> Komentár k hre: </label>
+        <input id="comment" type="text" name="comment" maxlength="1000"/> <br/>
+        <button type="submit"> Uložiť komentár </button>
+    </form>
+
+    <!--Vypis tabulky getComments-->
+    <section>
+        <table class="scores">
+            <h3>Posledné komentáre</h3>
+            <tr>
+                <th>Poradie</th>
+                <th>Meno</th>
+                <th>Komentár</th>
+                <th>Dátum a čas komentára</th>
+            </tr>
+            <tr th:each="comment: ${getComments}">
+                <td th:text="${commentStat.index+1}"></td>
+                <td th:text="${comment.userName}"></td>
+                <td th:text="${comment.comment}"></td>
+                <td th:text="${comment.commentedOn}"></td>
+            </tr>
+        </table>
+    </section>
+
+    <br>
+
+    <!--Pridanie hodnotenia hry-->
+    <form action="/minesweeper/rating" method="post">
+        <label for="rating"> Hodnotenie hry: </label>
+        <input id="rating" type="text" name="rating" maxlength="1"/> <br/>
+        <button type="submit"> Uložiť hodnotenie </button>
+    </form>
+
+    <!--Vypis tabulky ratings-->
+    <section>
+        <table class="scores">
+            <tr>
+                <th>Priemerný rating hry</th>
+            </tr>
+            <tr>
+                <td th:text="${getAvgRating}" align="center"></td>
             </tr>
         </table>
     </section>

@@ -26,4 +26,9 @@ public class PlayerServiceRest implements PlayerService {
     public List<Player> getPlayersByUserName(String uName) {
         return Arrays.asList(restTemplate.getForEntity(url + "/player/" + uName,Player.class).getBody());
     }
+
+    @Override
+    public List<Player> getAllPlayers() {
+        return Arrays.asList(restTemplate.getForEntity(url + "/player/" ,Player.class).getBody());
+    }
 }

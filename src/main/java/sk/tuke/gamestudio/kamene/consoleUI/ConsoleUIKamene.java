@@ -25,13 +25,13 @@ public class ConsoleUIKamene implements UserInterface {
     private RatingService ratingService;
 
     @Autowired
-    private CountryServiceJPA countryServiceJPA;
+    private CountryService countryService;
 
     @Autowired
-    private OccupationServiceJPA occupationServiceJPA;
+    private OccupationService occupationService;
 
     @Autowired
-    private PlayerServiceJPA playerServiceJPA;
+    private PlayerService playerService;
 
     private String userName ="";
 
@@ -113,7 +113,7 @@ public class ConsoleUIKamene implements UserInterface {
 
     public void printAllPlayers() {
         try {
-            List<Player> players = playerServiceJPA.getAllPlayers();
+            List<Player> players = playerService.getAllPlayers();
             for (int i = 0; i < players.size(); i++) {
                 System.out.printf("("+ (i) +") -> %3s\n", players.get(i).getUserName());
             }
@@ -124,7 +124,7 @@ public class ConsoleUIKamene implements UserInterface {
 
     public void printAllOccupations() {
         try {
-            List<Occupation> occupations = occupationServiceJPA.getOccupations();
+            List<Occupation> occupations = occupationService.getOccupations();
             System.out.println("Vyber si z nasledujuceho zoznamu povolani: ");
             for (int i = 0; i < occupations.size(); i++) {
                 System.out.printf("("+ (i) +") -> %3s\n", occupations.get(i).getOccupation());
@@ -136,7 +136,7 @@ public class ConsoleUIKamene implements UserInterface {
 
     public void printAllCountries() {
         try {
-            List<Country> countries = countryServiceJPA.getCountries();
+            List<Country> countries = countryService.getCountries();
             System.out.println("Vyber si z nasledujuceho zoznamu krajin: ");
             for (int i = 0; i < countries.size(); i++) {
                 System.out.printf("("+ (i) +") -> %3s\n", countries.get(i).getCountry());
@@ -148,7 +148,7 @@ public class ConsoleUIKamene implements UserInterface {
 
     public void printAllInformationFromUserName() {
         try {
-            List<Player> players = playerServiceJPA.getPlayersByUserName(userName);
+            List<Player> players = playerService.getPlayersByUserName(userName);
             System.out.println("Informacie o hracovi: ");
             for (int i = 0; i < players.size(); i++) {
                 System.out.printf("Meno - %2s, Priezvisko - %2s, Hodnotenie - %2d, Bydlisko - %2s, Povolanie - %2s\n",
@@ -167,7 +167,7 @@ public class ConsoleUIKamene implements UserInterface {
         try {
             System.out.println("Zadaj nazov krajiny ktoru chces pridat: ");
             String nameOfCountry = readLine();
-            countryServiceJPA.addCountry(new Country(nameOfCountry));
+            countryService.addCountry(new Country(nameOfCountry));
         } catch (Exception e) {
             System.err.println("Problem with writing to the database.\n" + e.getMessage());
         }
@@ -191,14 +191,14 @@ public class ConsoleUIKamene implements UserInterface {
         System.out.println("S ktorym menom chces pokracovat?");
         printAllPlayers();
         String uName = readLine();
-        playerServiceJPA.getPlayersByUserName(uName);
+        playerService.getPlayersByUserName(uName);
     }
 
     public void playerAdding() {
 
         try {
-            List<Occupation> occupations = occupationServiceJPA.getOccupations();
-            List<Country> countries = countryServiceJPA.getCountries();
+            List<Occupation> occupations = occupationService.getOccupations();
+            List<Country> countries = countryService.getCountries();
 
             System.out.println("Zadaj priezvisko: ");
             String lastName = readLine();
@@ -254,7 +254,7 @@ public class ConsoleUIKamene implements UserInterface {
                 }
             }
 
-            playerServiceJPA.addPlayer(new Player(userName, lastName, selfValue, countries.get(choiceOfCo), occupations.get(choiceOfOcc)));
+            playerService.addPlayer(new Player(userName, lastName, selfValue, countries.get(choiceOfCo), occupations.get(choiceOfOcc)));
             System.out.println("Pridany pouzivatel");
 
         } catch (Exception e) {

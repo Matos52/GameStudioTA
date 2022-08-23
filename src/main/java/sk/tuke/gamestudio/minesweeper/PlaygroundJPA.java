@@ -28,11 +28,11 @@ public class PlaygroundJPA {
     private StudyGroupServiceJPA studyGroupServiceJPA;
 
     @Autowired
-    private CountryServiceJPA countryServiceJPA;
+    private CountryService countryService;
     @Autowired
-    private OccupationServiceJPA occupationServiceJPA;
+    private OccupationService occupationService;
     @Autowired
-    private PlayerServiceJPA playerServiceJPA;
+    private PlayerService playerService;
 
     private BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
