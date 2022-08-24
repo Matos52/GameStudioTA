@@ -44,7 +44,7 @@ public class Field {
     public void mixTilesInField() {
         Random r = new Random(4);
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 20; i++) {
             switch (r.nextInt()) {
                 case 0:
                     this.moveDown();

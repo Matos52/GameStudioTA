@@ -37,7 +37,7 @@
         <table class='minefield'>
             <tr th:each="row: ${kameneField}">
                 <td th:each="tile: ${row}">
-                    <span th:text="${@kameneController.getTileText(tile)}"></span>
+                    <span th:text="${@kameneController.getTileNum(tile)}"></span>
                 </td>
             </tr>
         </table>

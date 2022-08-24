@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.WebApplicationContext;
 import sk.tuke.gamestudio.entity.Comment;
 import sk.tuke.gamestudio.entity.Rating;
+import sk.tuke.gamestudio.entity.Score;
 import sk.tuke.gamestudio.kamene.core.Field;
+import sk.tuke.gamestudio.kamene.core.GameState;
 import sk.tuke.gamestudio.kamene.core.Tile;
 import sk.tuke.gamestudio.service.CommentService;
 import sk.tuke.gamestudio.service.RatingService;
@@ -38,14 +40,22 @@ public class KameneController {
     @RequestMapping
     public String kamene(@RequestParam(required = false) Integer row, @RequestParam(required = false) Integer column, Model model) {
 
+        if(this.field.getGameState()!= GameState.PLAYING){ //I just won/lose
+
+            if(userController.isLogged()) {
+                Score newScore = new Score(GAME, userController.getLoggedUser(), this.field.getScore(), new Date());
+                scoreService.addScore(newScore);
+            }
+        }
+
         prepareModel(model);
         return GAME;
     }
 
     @RequestMapping("/new")
     public String newGame(Model model){
-        prepareModel(model);
         field = new Field(4,4);
+        prepareModel(model);
         return GAME;
     }
 
@@ -111,8 +121,13 @@ public class KameneController {
         return GAME;
     }
 
-    public String getTileText(Tile tile) {
-        return String.valueOf(tile.getValue());
+    public String getTileNum(Tile tile) {
+        if(tile.getValue()==0){
+            return "";
+        } else{
+            return Integer.toString(tile.getValue());
+        }
+
     }
 
     public void prepareModel(Model model) {
