@@ -47,7 +47,6 @@ public class MinesweeperController {
      */
     private boolean isPlaying = true;
 
-
     @RequestMapping
     public String minesweeper(@RequestParam(required = false) Integer row, @RequestParam(required = false) Integer column, Model model){
 
@@ -196,6 +195,17 @@ public class MinesweeperController {
         return "minesweeper";
     }
 
+    public String isRating() {
+        if(ratingService.getAverageRating(GAME) == 0) {
+            return "Bez hodnotení";
+        }
+        return String.valueOf(ratingService.getAverageRating(GAME));
+    }
+
+    public String noRating() {
+        return "Bez hodnoteni";
+    }
+
     @RequestMapping("/rating")
     public String rating(int rating, Model model) {
         Rating newRating;
@@ -236,6 +246,6 @@ public class MinesweeperController {
         model.addAttribute("minesweeperField",this.field.getTiles());
         model.addAttribute("bestScores",scoreService.getBestScores(GAME));
         model.addAttribute("getComments",commentService.getComments(GAME));
-        model.addAttribute("getAvgRating", ratingService.getAverageRating(GAME));
+        model.addAttribute("getAvgRating", isRating());
     }
 }

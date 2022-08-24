@@ -37,11 +37,42 @@ public class KameneController {
         return "kamene";
     }
 
+    @RequestMapping("/up")
+    public String moveUp(Model model){
+        prepareModel(model);
+        field.moveUp();
+        return "kamene";
+    }
+
+    @RequestMapping("/down")
+    public String moveDown(Model model){
+        prepareModel(model);
+        field.moveDown();
+        return "kamene";
+    }
+
+    @RequestMapping("/right")
+    public String moveRight(Model model){
+        prepareModel(model);
+        field.moveRight();
+        return "kamene";
+    }
+
+    @RequestMapping("/left")
+    public String moveLeft(Model model){
+        prepareModel(model);
+        field.moveLeft();
+        return "kamene";
+    }
+
+
+
     public String getTileText(Tile tile) {
         return String.valueOf(tile.getValue());
     }
 
     public void prepareModel(Model model) {
         model.addAttribute("kameneField", field.getTiles());
+        model.addAttribute("bestScores",scoreService.getBestScores(GAME));
     }
 }

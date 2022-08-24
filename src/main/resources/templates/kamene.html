@@ -16,10 +16,14 @@
 <!--Titulok s nazvom hry-->
 <h2>Kamene</h2>
 
-<!--Funkcie na switch medzi otv./ozn. a funkcia na spustenie novej hry-->
+<!--Funkcia na spustenie novej hry-->
 <div class="minesControl">
 
     <a  class="abutton" href="/kamene/new">Nova hra</a>
+    <a  class="abutton" href="/kamene/up">HORE</a>
+    <a  class="abutton" href="/kamene/down">DOLE</a>
+    <a  class="abutton" href="/kamene/right">DOPRAVA</a>
+    <a  class="abutton" href="/kamene/left">DOĽAVA</a>
 
 </div>
 
@@ -33,6 +37,25 @@
         </tr>
     </table>
 </div>
+
+<!--Vypis tabulky bestScores-->
+<section>
+    <table class="scores">
+        <h3>Najlepšie skóre</h3>
+        <tr>
+            <th>Poradie</th>
+            <th>Meno</th>
+            <th>Body</th>
+            <th>Dátum a čas hry</th>
+        </tr>
+        <tr th:each="score: ${bestScores}">
+            <td th:text="${scoreStat.index+1}"></td>
+            <td th:text="${score.userName}"></td>
+            <td th:text="${score.points}"></td>
+            <td th:text="${score.playedOn}"></td>
+        </tr>
+    </table>
+</section>
 
 </body>
 </html>

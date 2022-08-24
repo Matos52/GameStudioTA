@@ -40,9 +40,12 @@ public class RatingServiceJPA implements RatingService {
 
     @Override
     public int getAverageRating(String game) {
-        double avgRating = (Double) entityManager.createQuery("select AVG(CAST(r.rating as integer)) from Rating r where r.game = :myGame")
+        Number number = (Number) entityManager.createQuery("select AVG(CAST(r.rating as integer)) from Rating r where r.game = :myGame")
                 .setParameter("myGame", game).getSingleResult();
-        return (int) avgRating;
+        if(number == null) {
+            return 0;
+        }
+        return number.intValue();
     }
 
     @Override
