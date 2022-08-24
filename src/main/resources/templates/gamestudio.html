@@ -11,14 +11,27 @@
 <body>
     <main layout:fragment="content">
 
-        <form action="/login" method="post">
-            <label for="login"> Meno: </label> <input id="login" type="text" name="login" required/> <br/>
-            <label for="pass"> Heslo: </label> <input id="pass" type="password" name="password" required/> <br/>
-            <button type="submit"> Prihlasit sa </button>
+        <h1> Vyber si hru, do ktorej sa chceš prihlásiť</h1>
+        <br>
 
+        <h2>Minesweeper</h2>
+
+        <form action="/loginMinesweeper" method="post">
+            <label for="login"> Meno: </label> <input id="login" type="text" name="login" required/> <br/>
+            <label for="passMinesweeper"> Heslo: </label> <input id="passMinesweeper" type="password" name="password" required/> <br/>
+            <button type="submit"> Prihlasit sa </button>
+        </form>
+        <br>
+
+        <h2>Kamene</h2>
+
+        <form action="/loginKamene" method="post">
+            <label for="loginKamene"> Meno: </label> <input id="loginKamene" type="text" name="login" required/> <br/>
+            <label for="passKamene"> Heslo: </label> <input id="passKamene" type="password" name="password" required/> <br/>
+            <button type="submit"> Prihlasit sa </button>
         </form>
 
-        <h2>Hry</h2>
+        <h2>Zahraj si hru bez prihlásenia</h2>
         <ul>
             <li><a href="/minesweeper">Minesweeper</a></li>
             <li><a href="/kamene">Kamene</a></li>

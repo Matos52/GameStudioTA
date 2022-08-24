@@ -44,7 +44,7 @@ public class Field {
     public void mixTilesInField() {
         Random r = new Random(4);
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 2; i++) {
             switch (r.nextInt()) {
                 case 0:
                     this.moveDown();
@@ -156,10 +156,6 @@ public class Field {
     }
 
     public boolean isSolved() {
-        if((emptyTileRow != rowCount - 1) && (emptyTileColumn != columnCount - 1)) {
-            return false;
-        }
-
         int count = 1;
         int idealCount = 1;
 
@@ -170,6 +166,10 @@ public class Field {
                 }
                 count++;
             }
+        }
+
+        if(tiles[rowCount - 1][columnCount - 1].getValue() == 0) {
+            idealCount++;
         }
         return count == idealCount;
     }

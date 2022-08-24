@@ -69,7 +69,6 @@ public class MinesweeperController {
                 }
             }
         }
-
         prepareModel(model);
         return "minesweeper";
     }
@@ -130,10 +129,7 @@ public class MinesweeperController {
             }
             sb.append("</tr>\n");
         }
-
-
         sb.append("</table>\n");
-
         return sb.toString();
     }
 
@@ -200,10 +196,6 @@ public class MinesweeperController {
             return "Bez hodnotení";
         }
         return String.valueOf(ratingService.getAverageRating(GAME));
-    }
-
-    public String noRating() {
-        return "Bez hodnoteni";
     }
 
     @RequestMapping("/rating")

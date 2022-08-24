@@ -21,8 +21,8 @@ public class UserController {
 
     private final String GAME = "minesweeper";
 
-    @RequestMapping("/login")
-    public String login(String login, String password) {
+    @RequestMapping("/loginMinesweeper")
+    public String loginMinesweeper(String login, String password) {
         if(("heslo").equals(password)) {
 
             //Osertrenie dlzky mena
@@ -31,12 +31,26 @@ public class UserController {
                 //Presmeruje nas na danu adresu
                 return "redirect:/minesweeper";
             }
-
         }
         this.loggedUser=null;
-
         //Presmeruje nas na danu adresu
         return "redirect:/gamestudio";
+    }
+
+    @RequestMapping("/loginKamene")
+    public String loginKamene(String login, String password) {
+        if(("heslo").equals(password)) {
+
+            //Osertrenie dlzky mena
+            this.loggedUser = login.trim();
+            if(this.loggedUser.length()>0) {
+                //Presmeruje nas na danu adresu
+                return "redirect:/kamene";
+            }
+        }
+        this.loggedUser=null;
+        //Presmeruje nas na danu adresu
+        return "redirect:/kamene";
     }
 
     @RequestMapping("/logout")
