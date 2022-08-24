@@ -334,10 +334,10 @@ public class ConsoleUIKamene implements UserInterface {
     public boolean wantNewRound() {
         System.out.println("Chces si zahrat este raz? Y/N");
         String choice = readLine().toLowerCase(Locale.ROOT);
-        if(choice.equals("y")) {
+        if(choice.toLowerCase().equals("y")) {
             return true;
         }
-        if(choice.equals("n")) {
+        if(choice.toLowerCase().equals("n")) {
             return false;
         }
         System.out.println("Nespravne zadanie, skus este raz");
