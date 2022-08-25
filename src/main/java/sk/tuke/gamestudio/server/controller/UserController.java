@@ -24,7 +24,6 @@ public class UserController {
     @RequestMapping("/loginMinesweeper")
     public String loginMinesweeper(String login, String password) {
         if(("heslo").equals(password)) {
-
             //Osertrenie dlzky mena
             this.loggedUser = login.trim();
             if(this.loggedUser.length()>0) {

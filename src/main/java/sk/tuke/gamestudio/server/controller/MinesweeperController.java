@@ -2,10 +2,13 @@ package sk.tuke.gamestudio.server.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.WebApplicationContext;
 import sk.tuke.gamestudio.entity.Comment;
 import sk.tuke.gamestudio.entity.Rating;
@@ -48,47 +51,54 @@ public class MinesweeperController {
     private boolean isPlaying = true;
 
     @RequestMapping
-    public String minesweeper(@RequestParam(required = false) Integer row, @RequestParam(required = false) Integer column, Model model){
+    public String processUserInput(@RequestParam(required = false) Integer row, @RequestParam(required = false) Integer column, Model model){
 
-        if(row != null && column != null){
-
-            if(this.field.getState()==GameState.PLAYING){
-                if(marking){
-                    this.field.markTile(row,column);
-                }else{
-                    this.field.openTile(row,column);
-                }
-            }
-
-            if(this.field.getState()!= GameState.PLAYING && this.isPlaying==true){ //I just won/lose
-                this.isPlaying=false;
-
-                if(userController.isLogged()) {
-                    Score newScore = new Score(GAME, userController.getLoggedUser(), this.field.getScore(), new Date());
-                    scoreService.addScore(newScore);
-                }
-            }
-        }
+        startOrUpdateGame(row,column);
         prepareModel(model);
-        return "minesweeper";
+        return GAME;
     }
 
     @RequestMapping("/mark")
     public  String changeMarking(Model model){
-        if(this.field.getState()==GameState.PLAYING){
-            this.marking = !this.marking;
-        }
+        switchMode();
         prepareModel(model);
-        return "minesweeper";
+        return GAME;
     }
 
     @RequestMapping("/new")
-    public  String newGame(Model model){
-        this.field = new Field(9,9,10);
-        this.isPlaying = true;
-        this.marking = false;
+    public String newGame(Model model){
+        startNewGame();
         prepareModel(model);
-        return "minesweeper";
+        return GAME;
+    }
+
+    //Pre asynchronnu verziu hry
+    @RequestMapping("/asynch")
+    public String loadInAsynchMode(Model model) {
+        startOrUpdateGame(null,null);
+        prepareModel(model);
+        return "minesweeperAsynch";
+    }
+
+    @RequestMapping(value = "/json", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Field processUserInputJson(@RequestParam(required = false) Integer row, @RequestParam(required = false) Integer column){
+        startOrUpdateGame(row,column);
+        return this.field;
+    }
+
+    @RequestMapping(value = "/jsonmark", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public  Field changeMarkingJson(){
+        switchMode();
+        return this.field;
+    }
+
+    @RequestMapping(value = "/jsonnew", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Field newGameJson(){
+        startNewGame();
+        return this.field;
     }
 
     public String getCurrTime(){
@@ -175,6 +185,58 @@ public class MinesweeperController {
                 return "marked";
             default:
                 throw new RuntimeException("Unexpected tile state");
+        }
+    }
+
+    /**
+     * Initiates the game field and other variables to the state at the start of a new game
+     */
+    private void startNewGame(){
+        this.field = new Field(9,9,3);
+        this.isPlaying = true;
+        this.marking = false;
+    }
+
+    /**
+     * Updates the game field and other variables according to the move of the user
+     * Also adds the score to the score table if the game just ended.
+     * If the game did not start yet, starts the game.
+     * @param row row of the tile on which the user clicked
+     * @param column column of the tile on which the user clicked
+     */
+    private void startOrUpdateGame(Integer row, Integer column){
+
+        if(field==null){
+            startNewGame();
+        }
+
+        if(row != null && column != null){
+
+            if(this.marking){
+                this.field.markTile(row,column);
+            }else{
+                this.field.openTile(row,column);
+            }
+
+            if(this.field.getState()!= GameState.PLAYING && this.isPlaying==true){ //I just won/lose
+                this.isPlaying=false;
+
+
+                if(userController.isLogged()){
+                    Score newScore = new Score("minesweeper", userController.getLoggedUser(), this.field.getScore(), new Date());
+                    scoreService.addScore(newScore);
+                }
+            }
+        }
+    }
+
+    /**
+     * Switches the game mode (the <code>marking</code> property) between opening and marking the tiles.
+     * Applies only when the game is played.
+     */
+    private void switchMode(){
+        if(this.field.getState()==GameState.PLAYING){
+            this.marking = !this.marking;
         }
     }
 

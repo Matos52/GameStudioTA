@@ -37,53 +37,60 @@ public class KameneController {
 
     private String GAME = "kamene";
 
+    /**
+     * false if finished (won or lost), true if playing the game
+     */
+    private boolean isPlaying = true;
+    private boolean ableToMove = true;
+
     @RequestMapping
     public String kamene(@RequestParam(required = false) Integer row, @RequestParam(required = false) Integer column, Model model) {
 
-        if(this.field.getGameState()!= GameState.PLAYING){ //I just won/lose
-
-            if(userController.isLogged()) {
-                Score newScore = new Score(GAME, userController.getLoggedUser(), this.field.getScore(), new Date());
-                scoreService.addScore(newScore);
-            }
-        }
-
+        startOrUpdateGame(row,column);
         prepareModel(model);
         return GAME;
     }
 
     @RequestMapping("/new")
     public String newGame(Model model){
-        field = new Field(4,4);
+        startNewGame();
         prepareModel(model);
         return GAME;
     }
 
     @RequestMapping("/up")
     public String moveUp(Model model){
-        prepareModel(model);
-        field.moveUp();
+        if(ableToMove) {
+            prepareModel(model);
+            field.moveUp();
+        }
         return GAME;
     }
 
     @RequestMapping("/down")
     public String moveDown(Model model){
-        prepareModel(model);
-        field.moveDown();
+        if(ableToMove) {
+            prepareModel(model);
+            field.moveDown();
+        }
         return GAME;
     }
 
     @RequestMapping("/right")
     public String moveRight(Model model){
-        prepareModel(model);
-        field.moveRight();
+        if(ableToMove) {
+            prepareModel(model);
+            field.moveRight();
+        }
         return GAME;
     }
 
     @RequestMapping("/left")
     public String moveLeft(Model model){
-        prepareModel(model);
-        field.moveLeft();
+        if(ableToMove) {
+            prepareModel(model);
+            field.moveLeft();
+        }
         return GAME;
     }
 
@@ -124,10 +131,45 @@ public class KameneController {
     public String getTileNum(Tile tile) {
         if(tile.getValue()==0){
             return "";
-        } else{
-            return Integer.toString(tile.getValue());
+        } else {
+            return String.valueOf(tile.getValue());
+        }
+    }
+
+    /**
+     * Initiates the game field and other variables to the state at the start of a new game
+     */
+    private void startNewGame(){
+        this.field = new Field(4,4);
+        this.isPlaying = true;
+        this.ableToMove = true;
+    }
+
+    /**
+     * Updates the game field and other variables according to the move of the user
+     * Also adds the score to the score table if the game just ended.
+     * If the game did not start yet, starts the game.
+     * @param row row of the tile on which the user clicked
+     * @param column column of the tile on which the user clicked
+     */
+    private void startOrUpdateGame(Integer row, Integer column){
+
+        if(this.field==null){
+            startNewGame();
         }
 
+        if(row != null && column != null){
+
+            if(this.field.getGameState() == GameState.SOLVED && this.isPlaying==true){ //I just won/lose
+                this.isPlaying=false;
+                this.ableToMove=false;
+
+                if(userController.isLogged()){
+                    Score newScore = new Score(GAME, userController.getLoggedUser(), this.field.getScore(), new Date());
+                    scoreService.addScore(newScore);
+                }
+            }
+        }
     }
 
     public void prepareModel(Model model) {

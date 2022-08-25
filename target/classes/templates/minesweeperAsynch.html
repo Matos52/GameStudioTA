@@ -26,31 +26,17 @@
 
     <!--Funkcie na switch medzi otv./ozn. a funkcia na spustenie novej hry-->
     <div class="minesControl">
-        <span th:text="${gameStatus}"></span>
-        <a th:if="${marking and isPlaying}"  class="abutton" href="/minesweeper/mark">Na otváranie.</a>
-        <a th:if=" ${not marking and isPlaying}" class="abutton" href="/minesweeper/mark">Na označovanie.</a>
+        <span id="GameStatus"></span>
 
-
-        <a  class="abutton" href="/minesweeper/new">Nová hra</a>
-
+        <button id="btToOpen" class="abutton">Na otváranie</button>
+        <button id="btToMark" class="abutton" >Na označovanie</button>
+        <button id="btNewGame" class="abutton">Nová hra</button>
     </div>
 
     <!--Vypis herneho pola-->
     <!--The href attribute specifies the link's destination-->
-    <section>
-        <table class='minefield'>
-            <tr th:each="row: ${minesweeperField}">
-                <td th:each="tile: ${row}"
-                    th:attr="class=${@minesweeperController.getTileClass(tile)}">
-                    <a th:if="${isPlaying}" th:attr="href='/minesweeper?row='+${rowStat.index}+'&column='+${tileStat.index}">
-                        <span th:text="${@minesweeperController.getTileText(tile)}"></span>
-                    </a>
+    <section id="minesweeperField">
 
-                    <span th:if="not ${isPlaying}" th:text="${@minesweeperController.getTileText(tile)}"></span>
-
-                </td>
-            </tr>
-        </table>
     </section>
 
     <!--Vypis tabulky bestScores-->
@@ -65,13 +51,8 @@
                 <th>Dátum a čas hry</th>
             </tr>
             </thead>
-            <tbody>
-            <tr th:each="score: ${bestScores}">
-                <td th:text="${scoreStat.index+1}"></td>
-                <td th:text="${score.username}"></td>
-                <td th:text="${score.points}"></td>
-                <td th:text="${score.playedOn}"></td>
-            </tr>
+            <tbody id="scoresTableBody">
+
             </tbody>
         </table>
     </section>
@@ -128,6 +109,54 @@
             </tr>
         </table>
     </section>
+
+    <script type="text/javascript">
+
+        const getJsonUrl ="/api/score/minesweeper";
+        const tableBodyElmId="scoresTableBody";
+
+        fetchAndRenderBestScores(getJsonUrl,tableBodyElmId);
+
+        function fetchAndRenderBestScores(getJsonUrl,tableBodyElmId) {
+
+           fetch(getJsonUrl)  //there may be a second parameter, an object wih options, but we do not need it now.
+               .then(response => {      //fetch promise fullfilled (operation completed successfully)
+                   if (response.ok) {    //successful execution includes an error response from the server. So we have to check the return status of the response here.
+                       return response.json(); //we return a new promise with the response data as a js object, constructed from the JSON string in the response
+                   } else { //if we get server error
+                       return Promise.reject(new Error(`Best scores acquisition failed. Server answered with ${response.status}: ${response.statusText}.`)); //we return a rejected promise to be catched later
+                   }
+               })
+               .then(bestScoresData => { //here we process the returned response data in JSON ...
+                   renderBestScores(bestScoresData, tableBodyElmId);
+               })
+               .catch(error => { ////here we process all the failed promises
+                   errorMessage = "Nepodarilo sa získať údaje o najlepších skóre. Podrobnosti: " + error;
+                   console.log(errorMessage);
+                   //document.getElementById(fieldElmId).innerHTML =error;
+               });
+        }
+
+        function renderBestScores(bestScoresData, tableBodyElmId) {
+
+           const rowCount = bestScoresData.length;
+
+           let html2Render="";
+
+           for(row=0;row<rowCount;row++){
+               html2Render+=
+                   `<tr>
+                       <td>${row+1} </td>
+                       <td>${bestScoresData[row].username}</td>
+                       <td>${bestScoresData[row].points}</td>
+                       <td>${bestScoresData[row].playedOn}</td>
+                    </tr>
+                   `;
+           }
+           document.getElementById(tableBodyElmId).innerHTML=html2Render;
+        }
+    </script>
+
 </main>
 
 </body>

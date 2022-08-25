@@ -42,10 +42,10 @@ public class Field {
     }
 
     public void mixTilesInField() {
-        Random r = new Random(4);
+        Random r = new Random();
 
-        for (int i = 0; i < 20; i++) {
-            switch (r.nextInt()) {
+        for (int i = 0; i < 5; i++) {
+            switch (r.nextInt(4)) {
                 case 0:
                     this.moveDown();
                     break;

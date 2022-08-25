@@ -55,20 +55,24 @@
 
     <!--Vypis tabulky bestScores-->
     <section>
+        <h3>Najlepšie skóre</h3>
         <table class="scores">
-            <h3>Najlepšie skóre</h3>
+            <thead>
             <tr>
                 <th>Poradie</th>
                 <th>Meno</th>
                 <th>Body</th>
                 <th>Dátum a čas hry</th>
             </tr>
+            </thead>
+            <tbody>
             <tr th:each="score: ${bestScores}">
                 <td th:text="${scoreStat.index+1}"></td>
-                <td th:text="${score.userName}"></td>
+                <td th:text="${score.username}"></td>
                 <td th:text="${score.points}"></td>
                 <td th:text="${score.playedOn}"></td>
             </tr>
+            </tbody>
         </table>
     </section>
 
@@ -81,22 +85,26 @@
         <button type="submit"> Uložiť komentár </button>
     </form>
 
-    <!--Vypis tabulky getComments-->
+    <!--Vypis tabulky getComments --- Prerobit podla bestScores!-->
     <section>
+        <h3>Posledné komentáre</h3>
         <table class="scores">
-            <h3>Posledné komentáre</h3>
+            <thead>
             <tr>
                 <th>Poradie</th>
                 <th>Meno</th>
                 <th>Komentár</th>
                 <th>Dátum a čas komentára</th>
             </tr>
+            </thead>
+            <tbody>
             <tr th:each="comment: ${getComments}">
                 <td th:text="${commentStat.index+1}"></td>
                 <td th:text="${comment.userName}"></td>
                 <td th:text="${comment.comment}"></td>
                 <td th:text="${comment.commentedOn}"></td>
             </tr>
+            </tbody>
         </table>
     </section>
 
