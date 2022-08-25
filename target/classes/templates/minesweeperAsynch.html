@@ -112,49 +112,49 @@
 
     <script type="text/javascript">
 
-        const getJsonUrl ="/api/score/minesweeper";
-        const tableBodyElmId="scoresTableBody";
+    const getJsonUrl ="/api/score/minesweeper";
+    const tableBodyElmId="scoresTableBody";
 
-        fetchAndRenderBestScores(getJsonUrl,tableBodyElmId);
+    fetchAndRenderBestScores(getJsonUrl,tableBodyElmId);
 
-        function fetchAndRenderBestScores(getJsonUrl,tableBodyElmId) {
+    function fetchAndRenderBestScores(getJsonUrl,tableBodyElmId) {
 
-           fetch(getJsonUrl)  //there may be a second parameter, an object wih options, but we do not need it now.
-               .then(response => {      //fetch promise fullfilled (operation completed successfully)
-                   if (response.ok) {    //successful execution includes an error response from the server. So we have to check the return status of the response here.
-                       return response.json(); //we return a new promise with the response data as a js object, constructed from the JSON string in the response
-                   } else { //if we get server error
-                       return Promise.reject(new Error(`Best scores acquisition failed. Server answered with ${response.status}: ${response.statusText}.`)); //we return a rejected promise to be catched later
-                   }
-               })
-               .then(bestScoresData => { //here we process the returned response data in JSON ...
-                   renderBestScores(bestScoresData, tableBodyElmId);
-               })
-               .catch(error => { ////here we process all the failed promises
-                   errorMessage = "Nepodarilo sa získať údaje o najlepších skóre. Podrobnosti: " + error;
-                   console.log(errorMessage);
-                   //document.getElementById(fieldElmId).innerHTML =error;
-               });
+        fetch(getJsonUrl)  //there may be a second parameter, an object wih options, but we do not need it now.
+            .then(response => {      //fetch promise fullfilled (operation completed successfully)
+                if (response.ok) {    //successful execution includes an error response from the server. So we have to check the return status of the response here.
+                    return response.json(); //we return a new promise with the response data as a js object, constructed from the JSON string in the response
+                } else { //if we get server error
+                    return Promise.reject(new Error(`Best scores acquisition failed. Server answered with ${response.status}: ${response.statusText}.`)); //we return a rejected promise to be catched later
+                }
+            })
+            .then(bestScoresData => { //here we process the returned response data in JSON ...
+                renderBestScores(bestScoresData, tableBodyElmId);
+            })
+            .catch(error => { ////here we process all the failed promises
+                errorMessage = "Nepodarilo sa získať údaje o najlepších skóre. Podrobnosti: " + error;
+                console.log(errorMessage);
+                //document.getElementById(fieldElmId).innerHTML =error;
+            });
+    }
+
+    function renderBestScores(bestScoresData, tableBodyElmId) {
+
+        const rowCount = bestScoresData.length;
+
+        let html2Render="";
+
+        for(row=0;row<rowCount;row++){
+            html2Render+=
+                `<tr>
+                    <td>${row+1} </td>
+                    <td>${bestScoresData[row].username}</td>
+                    <td>${bestScoresData[row].points}</td>
+                    <td>${bestScoresData[row].playedOn}</td>
+                 </tr>
+                `;
         }
-
-        function renderBestScores(bestScoresData, tableBodyElmId) {
-
-           const rowCount = bestScoresData.length;
-
-           let html2Render="";
-
-           for(row=0;row<rowCount;row++){
-               html2Render+=
-                   `<tr>
-                       <td>${row+1} </td>
-                       <td>${bestScoresData[row].username}</td>
-                       <td>${bestScoresData[row].points}</td>
-                       <td>${bestScoresData[row].playedOn}</td>
-                    </tr>
-                   `;
-           }
-           document.getElementById(tableBodyElmId).innerHTML=html2Render;
-        }
+        document.getElementById(tableBodyElmId).innerHTML=html2Render;
+    }
     </script>
 
 </main>

@@ -160,7 +160,7 @@ public class KameneController {
 
         if(row != null && column != null){
 
-            if(this.field.getGameState() == GameState.SOLVED && this.isPlaying==true){ //I just won/lose
+            if(field.isSolved()){ //I just won/lose
                 this.isPlaying=false;
                 this.ableToMove=false;
 

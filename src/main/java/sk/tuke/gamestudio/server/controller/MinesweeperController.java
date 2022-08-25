@@ -80,24 +80,30 @@ public class MinesweeperController {
         return "minesweeperAsynch";
     }
 
-    @RequestMapping(value = "/json", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value="/json", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Field processUserInputJson(@RequestParam(required = false) Integer row, @RequestParam(required = false) Integer column){
-        startOrUpdateGame(row,column);
+        boolean justFinished = startOrUpdateGame(row,column);
+        this.field.setJustFinished(justFinished);
+        this.field.setMarking(marking);
         return this.field;
     }
 
-    @RequestMapping(value = "/jsonmark", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value="/jsonmark", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public  Field changeMarkingJson(){
         switchMode();
+        this.field.setJustFinished(false);
+        this.field.setMarking(marking);
         return this.field;
     }
 
-    @RequestMapping(value = "/jsonnew", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value="/jsonnew", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Field newGameJson(){
+    public  Field newGameJson(){
         startNewGame();
+        this.field.setJustFinished(false);
+        this.field.setMarking(marking);
         return this.field;
     }
 
@@ -204,7 +210,9 @@ public class MinesweeperController {
      * @param row row of the tile on which the user clicked
      * @param column column of the tile on which the user clicked
      */
-    private void startOrUpdateGame(Integer row, Integer column){
+    private boolean startOrUpdateGame(Integer row, Integer column){
+
+        boolean justFinished=false;
 
         if(field==null){
             startNewGame();
@@ -221,6 +229,7 @@ public class MinesweeperController {
             if(this.field.getState()!= GameState.PLAYING && this.isPlaying==true){ //I just won/lose
                 this.isPlaying=false;
 
+                justFinished=true;
 
                 if(userController.isLogged()){
                     Score newScore = new Score("minesweeper", userController.getLoggedUser(), this.field.getScore(), new Date());
@@ -228,6 +237,7 @@ public class MinesweeperController {
                 }
             }
         }
+        return justFinished;
     }
 
     /**

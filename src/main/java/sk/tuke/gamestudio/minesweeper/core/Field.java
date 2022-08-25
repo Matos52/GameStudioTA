@@ -37,6 +37,21 @@ public class Field {
     private long startMillis;
 
     /**
+     * <code>true</code> if the game, played with this field is in the <i>marking tiles</i> mode,
+     * <code>false</code> if the game is in the <i>opening tiles</i> mode.
+     * Used only for playing via web in the asynchronous mode, to get this information to the client in the
+     * json version of the field.
+     */
+    private boolean marking=false;
+
+    /**
+     * <code>true</code> if the game ended after this move, <code>false</code> otherwise.
+     * Used only for playing via web in the asynchronous mode, to get this information to the client in the
+     * json version of the field.
+     */
+    private boolean justFinished=false;
+
+    /**
      * Constructor.
      *
      * @param rowCount    row count
@@ -225,6 +240,22 @@ public class Field {
 
     public int getScore() {
         return rowCount * columnCount * 10 - getPlayTimeInSeconds();
+    }
+
+    public boolean isMarking() {
+        return marking;
+    }
+
+    public void setMarking(boolean marking) {
+        this.marking = marking;
+    }
+
+    public boolean isJustFinished() {
+        return justFinished;
+    }
+
+    public void setJustFinished(boolean justFinished) {
+        this.justFinished = justFinished;
     }
 
 
