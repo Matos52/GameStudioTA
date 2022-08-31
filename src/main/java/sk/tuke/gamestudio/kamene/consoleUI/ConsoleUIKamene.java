@@ -83,8 +83,7 @@ public class ConsoleUIKamene implements UserInterface {
                 System.out.println("Vyhral si hru");
                 if(wantNewRound()) {
                     System.out.println("Vytvaram nove kolo");
-                    newGameStarted(new Field(settings.getRozmerStvorca(),
-                            settings.getRozmerStvorca()));
+                    newGameStarted(new Field(4, 4));
                 } else {
                     System.out.println("Ukoncujem hru");
                     gameScore=this.field.getScore();

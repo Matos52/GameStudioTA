@@ -36,7 +36,7 @@ public class MinesweeperController {
     private CommentService commentService;
     @Autowired
     private RatingService ratingService;
-    private Field field = new Field(9,9,10);
+    private Field field;
 
     /**
      * false if opening tiles, true if marking tiles
@@ -52,6 +52,7 @@ public class MinesweeperController {
 
     @RequestMapping
     public String processUserInput(@RequestParam(required = false) Integer row, @RequestParam(required = false) Integer column, Model model){
+        //method renamed from minesweeper
 
         startOrUpdateGame(row,column);
         prepareModel(model);
@@ -74,9 +75,8 @@ public class MinesweeperController {
 
     //Pre asynchronnu verziu hry
     @RequestMapping("/asynch")
-    public String loadInAsynchMode(Model model) {
+    public String loadInAsynchMode() {
         startOrUpdateGame(null,null);
-        prepareModel(model);
         return "minesweeperAsynch";
     }
 
@@ -212,7 +212,7 @@ public class MinesweeperController {
      */
     private boolean startOrUpdateGame(Integer row, Integer column){
 
-        boolean justFinished=false;
+        boolean justFinished = false;
 
         if(field==null){
             startNewGame();
@@ -248,6 +248,23 @@ public class MinesweeperController {
         if(this.field.getState()==GameState.PLAYING){
             this.marking = !this.marking;
         }
+    }
+
+    private String getStatusMessage() {
+        String gameStatus="";
+        if(this.field.getState()== GameState.FAILED){
+            gameStatus="Prehral si";
+        }else if(this.field.getState()== GameState.SOLVED){
+            gameStatus="Vyhral si (skóre: "+this.field.getScore()+")";
+        }else{
+            gameStatus="Hraješ a ";
+            if(this.marking){
+                gameStatus+="označuješ";
+            }else{
+                gameStatus+="otváraš";
+            }
+        }
+        return gameStatus;
     }
 
     @RequestMapping("/comment")
@@ -290,23 +307,9 @@ public class MinesweeperController {
      */
     private void prepareModel(Model model){
 
-        String gameStatus="";
-        if(this.field.getState()== GameState.FAILED){
-            gameStatus="Prehral si";
-        }else if(this.field.getState()== GameState.SOLVED){
-            gameStatus="Vyhral si (skóre: "+this.field.getScore()+")";
-        }else{
-            gameStatus="Hraješ a ";
-            if(this.marking){
-                gameStatus+="označuješ";
-            }else{
-                gameStatus+="otváraš";
-            }
-        }
-
         model.addAttribute("isPlaying",this.isPlaying);
         model.addAttribute("marking",this.marking);
-        model.addAttribute("gameStatus",gameStatus);
+        model.addAttribute("gameStatus",getStatusMessage());
         model.addAttribute("minesweeperField",this.field.getTiles());
         model.addAttribute("bestScores",scoreService.getBestScores(GAME));
         model.addAttribute("getComments",commentService.getComments(GAME));

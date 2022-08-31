@@ -23,16 +23,17 @@
 
     <!--Funkcia na spustenie novej hry-->
     <div class="minesControl">
+        <span th:text="${gameStatus}"></span>
 
         <a  class="abutton" href="/kamene/new">Nova hra</a>
-        <a  class="abutton" href="/kamene/up">HORE</a>
-        <a  class="abutton" href="/kamene/down">DOLE</a>
-        <a  class="abutton" href="/kamene/right">DOPRAVA</a>
-        <a  class="abutton" href="/kamene/left">DOĽAVA</a>
+        <a th:if="${ableToMove}" class="abutton" href="/kamene/up">HORE</a>
+        <a th:if="${ableToMove}" class="abutton" href="/kamene/down">DOLE</a>
+        <a th:if="${ableToMove}" class="abutton" href="/kamene/right">DOPRAVA</a>
+        <a th:if="${ableToMove}" class="abutton" href="/kamene/left">DOĽAVA</a>
 
     </div>
 
-    <!--Vypis herneho pola-->
+<!--    Vypis herneho pola-->
     <div>
         <table class='minefield'>
             <tr th:each="row: ${kameneField}">

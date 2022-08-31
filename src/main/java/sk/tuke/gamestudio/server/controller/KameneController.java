@@ -60,38 +60,30 @@ public class KameneController {
 
     @RequestMapping("/up")
     public String moveUp(Model model){
-        if(ableToMove) {
-            prepareModel(model);
-            field.moveUp();
-        }
-        return GAME;
+        prepareModel(model);
+        field.moveUp();
+        return "redirect:/kamene";
     }
 
     @RequestMapping("/down")
     public String moveDown(Model model){
-        if(ableToMove) {
-            prepareModel(model);
-            field.moveDown();
-        }
-        return GAME;
+        prepareModel(model);
+        field.moveDown();
+        return "redirect:/kamene";
     }
 
     @RequestMapping("/right")
     public String moveRight(Model model){
-        if(ableToMove) {
-            prepareModel(model);
-            field.moveRight();
-        }
-        return GAME;
+        prepareModel(model);
+        field.moveRight();
+        return "redirect:/kamene";
     }
 
     @RequestMapping("/left")
     public String moveLeft(Model model){
-        if(ableToMove) {
-            prepareModel(model);
-            field.moveLeft();
-        }
-        return GAME;
+        prepareModel(model);
+        field.moveLeft();
+        return "redirect:/kamene";
     }
 
     @RequestMapping("/comment")
@@ -158,21 +150,31 @@ public class KameneController {
             startNewGame();
         }
 
-        if(row != null && column != null){
+        if(this.field.isSolved()) {
+            this.field.setGameState(GameState.SOLVED);
+            ableToMove = false;
+            this.isPlaying = false;
 
-            if(field.isSolved()){ //I just won/lose
-                this.isPlaying=false;
-                this.ableToMove=false;
-
-                if(userController.isLogged()){
-                    Score newScore = new Score(GAME, userController.getLoggedUser(), this.field.getScore(), new Date());
-                    scoreService.addScore(newScore);
-                }
+            if(userController.isLogged()){
+                Score newScore = new Score(GAME, userController.getLoggedUser(), this.field.getScore(), new Date());
+                scoreService.addScore(newScore);
             }
         }
     }
 
+    private String getStatusMessage() {
+        String gameStatus="";
+        if(this.field.getGameState() == GameState.SOLVED){
+            gameStatus="Vyhral si (skóre: "+this.field.getScore()+")";
+        } else {
+            gameStatus="Hraješ a posúvaš políčko";
+        }
+        return gameStatus;
+    }
+
     public void prepareModel(Model model) {
+        model.addAttribute("ableToMove",this.ableToMove);
+        model.addAttribute("gameStatus",getStatusMessage());
         model.addAttribute("kameneField", field.getTiles());
         model.addAttribute("bestScores", scoreService.getBestScores(GAME));
         model.addAttribute("getComments", commentService.getComments(GAME));

@@ -114,7 +114,7 @@ public class ConsoleUI implements UserInterface {
             update();
             processInput();
 
-            var fieldState=this.field.getState();
+            GameState fieldState = this.field.getState();
 
             if (fieldState == GameState.FAILED) {
                 System.out.println(userName+", odkryl si minu. Prehral si. Tvoje skore je "+gameScore+".");

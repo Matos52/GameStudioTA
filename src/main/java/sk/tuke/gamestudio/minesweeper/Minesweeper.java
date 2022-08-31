@@ -15,7 +15,7 @@ public class Minesweeper {
     //vracia prave jednu instanciu singletona
     public static Minesweeper getInstance() {
         if(instance == null) {
-            new Minesweeper();
+            instance = new Minesweeper();
         }
         return instance;
     }
@@ -26,7 +26,6 @@ public class Minesweeper {
     //singleton - konstruktor musi byt private
     private Minesweeper() {
         instance = this; //singleton
-
         final UserInterface userInterface = new ConsoleUI();
         userInterface.play();
     }

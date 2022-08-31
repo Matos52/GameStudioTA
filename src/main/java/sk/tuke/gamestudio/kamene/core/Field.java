@@ -39,6 +39,7 @@ public class Field {
 
         //zamiesa dlazdice v poli
         mixTilesInField();
+        startMillis = System.currentTimeMillis();
     }
 
     public void mixTilesInField() {
