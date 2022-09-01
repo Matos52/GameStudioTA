@@ -13,6 +13,7 @@ import sk.tuke.gamestudio.kamene.consoleUI.ConsoleUIKamene;
 import sk.tuke.gamestudio.minesweeper.PlaygroundJPA;
 import sk.tuke.gamestudio.minesweeper.consoleui.ConsoleUI;
 import sk.tuke.gamestudio.service.*;
+import sk.tuke.gamestudio.sudoku.consoleUI.ConsoleUISudoku;
 
 @SpringBootApplication
 @ComponentScan(excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = "sk.tuke.gamestudio.server.*"))
@@ -36,9 +37,15 @@ public class SpringClient {
 
 
     //Sluzi na spustenie hry Kamene
-    @Bean
+    //@Bean
     public CommandLineRunner runner(ConsoleUIKamene consoleUIKamene) {
         return s -> consoleUIKamene.play();
+    }
+
+    //Sluzi na spustenie hry Sudoku
+    @Bean
+    public CommandLineRunner runner(ConsoleUISudoku consoleUISudoku) {
+        return s -> consoleUISudoku.play();
     }
 
     @Bean
@@ -54,6 +61,11 @@ public class SpringClient {
     @Bean
     public  ConsoleUIKamene consoleUIKamene() {
         return new ConsoleUIKamene();
+    }
+
+    @Bean
+    public  ConsoleUISudoku consoleUISudoku() {
+        return new ConsoleUISudoku();
     }
 
     @Bean

@@ -42,6 +42,87 @@ label {
     min-width: 5em;
 }
 
+/*Sudoku table*/
+
+table.sudoku td {
+    text-align: center;
+    background-color: lightgray;
+    width: 1.5em;
+    height: 1.5em;
+    font-size: 2.1em;
+    border-radius: 0.2em;
+}
+
+table.sudoku a:link,
+table.sudoku a:visited,
+table.sudoku a:link:hover,
+table.sudoku a:visited:hover {
+    color: inherit;
+    font-weight: normal;
+    text-decoration: none;
+}
+
+table.sudoku a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+table.sudoku td.closed {
+    background-color: darkgray;
+    color: darkgray;
+}
+
+table.sudoku td.closed:hover {
+    background-color: springgreen;
+}
+
+table.sudoku td.closed span {
+    display: none;
+}
+
+table.sudoku td:first-child {
+  border-left:solid;
+}
+table.sudoku td:nth-child(3n) {
+  border-right:solid ;
+}
+table.sudoku tr:first-child {
+  border-top:solid;
+}
+table.sudoku tr:nth-child(3n) td {
+  border-bottom:solid ;
+}
+
+/*adjustment for smaller screens/viewports*/
+@media (max-width: 600px)/*,
+(min-resolution: 1.8dppx) */ {
+    body {
+        max-width: 95vw;
+    }
+
+    table.sudoku td {
+        font-size: calc(1em + 4vw);
+        width: 30vw;
+        height: 30vw;
+        min-width: 1em;
+        min-height: 1em;
+    }
+}
+
+@media (max-height: 780px),
+(max-width: 600px) and (orientation: landscape)/*,
+(min-resolution: 1.8dppx)  and (orientation:landscape)*/ {
+
+    table.sudoku td {
+        font-size: calc(1em + 2vh);
+        width: 5vh;
+        height: 5vh;
+    }
+}
+
 
 
 /*Properties of the tables with scores*/
