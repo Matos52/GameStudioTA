@@ -11,4 +11,5 @@ public interface PlayerService {
     public List<Player> getPlayersByUserName(String uName);
 
     public List<Player> getAllPlayers();
+
 }

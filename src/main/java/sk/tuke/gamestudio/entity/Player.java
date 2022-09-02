@@ -10,7 +10,7 @@ public class Player {
     @GeneratedValue
     private long ident;
 
-    @Column(nullable = false, length=32)
+    @Column(nullable = false, length=32, unique = true)
     private String userName;
 
     @Column(nullable = false, length=128)

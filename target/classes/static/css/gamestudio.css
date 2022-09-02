@@ -105,8 +105,8 @@ table.sudoku tr:nth-child(3n) td {
 
     table.sudoku td {
         font-size: calc(1em + 4vw);
-        width: 30vw;
-        height: 30vw;
+        width: 10vw;
+        height: 10vw;
         min-width: 1em;
         min-height: 1em;
     }

@@ -9,6 +9,8 @@ public class Field {
     private int columnCount;
     GameState gameState = GameState.PLAYING;
 
+    private boolean justFinished=false;
+
     Tile[][] tiles;
     //suradnice na sledovanie prazdnej dlazdice
     int emptyTileRow;
@@ -242,4 +244,9 @@ public class Field {
     public int getScore() {
         return rowCount * columnCount * 10 - getPlayingSeconds();
     }
+
+    public void setJustFinished(boolean justFinished) {
+        this.justFinished = justFinished;
+    }
+
 }

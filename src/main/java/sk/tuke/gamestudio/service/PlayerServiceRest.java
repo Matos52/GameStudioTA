@@ -19,7 +19,7 @@ public class PlayerServiceRest implements PlayerService {
 
     @Override
     public void addPlayer(Player player) {
-        restTemplate.postForEntity(url+"/player",player, Score.class);
+        restTemplate.postForObject(url+"/player",player, Player.class);
     }
 
     @Override

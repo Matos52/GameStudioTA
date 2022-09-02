@@ -21,7 +21,6 @@ public class PlayerWebServiceRest {
     public List<Player> getPlayers(@PathVariable String uName) {
         return playerService.getPlayersByUserName(uName);
     }
-
     @PostMapping
     public void addPlayer(@RequestBody Player player) {
         playerService.addPlayer(player);

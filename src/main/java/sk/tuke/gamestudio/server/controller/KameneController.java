@@ -2,10 +2,12 @@ package sk.tuke.gamestudio.server.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.WebApplicationContext;
 import sk.tuke.gamestudio.entity.Comment;
 import sk.tuke.gamestudio.entity.Rating;
@@ -33,7 +35,9 @@ public class KameneController {
     @Autowired
     private RatingService ratingService;
 
-    private Field field = new Field(4, 4);
+    private Field field = new Field(4,4);
+
+    private GameState gamestate;
 
     private String GAME = "kamene";
 
@@ -61,29 +65,84 @@ public class KameneController {
     @RequestMapping("/up")
     public String moveUp(Model model){
         prepareModel(model);
-        field.moveUp();
+        this.field.moveUp();
         return "redirect:/kamene";
     }
 
     @RequestMapping("/down")
     public String moveDown(Model model){
         prepareModel(model);
-        field.moveDown();
+        this.field.moveDown();
         return "redirect:/kamene";
     }
 
     @RequestMapping("/right")
     public String moveRight(Model model){
         prepareModel(model);
-        field.moveRight();
+        this.field.moveRight();
         return "redirect:/kamene";
     }
 
     @RequestMapping("/left")
     public String moveLeft(Model model){
         prepareModel(model);
-        field.moveLeft();
+        this.field.moveLeft();
         return "redirect:/kamene";
+    }
+
+    //Pre asynchronnu verziu hry
+    @RequestMapping("/asynch")
+    public String loadInAsynchMode() {
+        startOrUpdateGame(null,null);
+        return "kameneAsynch";
+    }
+
+    @RequestMapping(value="/json", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Field processUserInputJson(@RequestParam(required = false) Integer row, @RequestParam(required = false) Integer column){
+        boolean justFinished = startOrUpdateGame(row,column);
+        this.field.setJustFinished(justFinished);
+        return this.field;
+    }
+
+    @RequestMapping(value="/jsonnew", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Field newGameJson(){
+        startNewGame();
+        this.field.setJustFinished(false);
+        return this.field;
+    }
+
+    @RequestMapping(value="/jsonup", produces= MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Field moveUpAsynch() {
+        this.field.moveUp();
+
+        return this.field;
+    }
+
+    @RequestMapping(value="/jsondown", produces= MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Field moveDownAsynch() {
+        this.field.moveDown();
+
+        return this.field;
+    }
+
+    @RequestMapping(value="/jsonright", produces= MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Field moveRightAsynch() {
+        this.field.moveRight();
+
+        return this.field;
+    }
+
+    @RequestMapping(value="/jsonleft", produces= MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Field moveLeftAsynch() {
+        this.field.moveLeft();
+
+        return this.field;
     }
 
     @RequestMapping("/comment")
@@ -144,7 +203,9 @@ public class KameneController {
      * @param row row of the tile on which the user clicked
      * @param column column of the tile on which the user clicked
      */
-    private void startOrUpdateGame(Integer row, Integer column){
+    private boolean startOrUpdateGame(Integer row, Integer column){
+
+        boolean justFinished = false;
 
         if(this.field==null){
             startNewGame();
@@ -155,11 +216,14 @@ public class KameneController {
             ableToMove = false;
             this.isPlaying = false;
 
+            justFinished=true;
+
             if(userController.isLogged()){
                 Score newScore = new Score(GAME, userController.getLoggedUser(), this.field.getScore(), new Date());
                 scoreService.addScore(newScore);
             }
         }
+        return justFinished;
     }
 
     private String getStatusMessage() {
